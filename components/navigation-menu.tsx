@@ -14,21 +14,34 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { NAV_LINKS } from "@/lib/data";
+import { usePathname } from "next/navigation";
 
 export function HeaderNavigationMenu() {
+  const path = usePathname();
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
           <Link href="/" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink
+              className={cn(navigationMenuTriggerStyle(), {
+                "bg-accent": path == "/",
+              })}
+            >
               Dashboard
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
         {NAV_LINKS.map((link, index) => (
           <NavigationMenuItem key={index}>
-            <NavigationMenuTrigger>{link.title}</NavigationMenuTrigger>
+            <NavigationMenuTrigger
+              className={cn("", {
+                "bg-accent": path.includes(link.title.toLowerCase()),
+              })}
+            >
+              {link.title}
+            </NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
                 {link.items?.map((item) => (

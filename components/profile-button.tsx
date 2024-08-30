@@ -13,6 +13,8 @@ import { useRouter } from "next/navigation";
 const ProfileButton = () => {
   const router = useRouter();
 
+  const handleLogout = () => {};
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,9 +29,7 @@ const ProfileButton = () => {
         <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem>Support</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => router.push("/login")}>
-          Login
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

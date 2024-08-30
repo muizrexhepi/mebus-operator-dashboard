@@ -31,6 +31,38 @@ export const NAV_LINKS = [
         href: "/lines/tickets/create",
         description: "Generate tickets for specific lines and trips.",
       },
+      {
+        title: "Add cities",
+        href: "/lines/cities/create",
+        description: "Create cities with their stations so you can use them to create tickets.",
+      },
+    ],
+  },
+  {
+    title: "Agencies",
+    icon: Package,
+    description: "Manage agencies/partners.",
+    items: [
+      {
+        title: "Create Agency",
+        href: "/agencies/create",
+        description: "Set up a new bus line and define its route.",
+      },
+      {
+        title: "Edit Lines",
+        href: "/lines/edit",
+        description: "Modify existing bus lines and update their routes.",
+      },
+      {
+        title: "Create Tickets",
+        href: "/lines/tickets/create",
+        description: "Generate tickets for specific lines and trips.",
+      },
+      {
+        title: "Add cities",
+        href: "/lines/cities/create",
+        description: "Create cities with their stations so you can use them to create tickets.",
+      },
     ],
   },
   {

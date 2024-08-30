@@ -57,13 +57,13 @@ export default function Component() {
 
       newUser.then(
         function (response) {
-          console.log(response); // Success
+          console.log(response);
           setIsLoading(false);
           router.push("/");
         },
         function (error) {
           setError(error.message);
-          console.log(error); // Failure
+          console.log(error);
           setIsLoading(false);
         }
       );
@@ -107,7 +107,7 @@ export default function Component() {
                       <FormLabel className="flex justify-between items-center">
                         <p>Password</p>
                         <Link
-                          className="text-sm font-medium text-indigo-500"
+                          className="text-sm font-medium text-accent-foreground"
                           href="/?reset=true"
                         >
                           Forgot password?
