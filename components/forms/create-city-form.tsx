@@ -17,53 +17,45 @@ import {
 import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react";
 import { FormError } from "@/components/form-error";
-import { citySchema } from "@/schemas";
-import { API_URL } from "@/environment";
-import axios from "axios";
-import { toast } from "../ui/use-toast";
+import { stationSchema } from "@/schemas";
+import { FormSuccess } from "../form-success";
+import { createStation } from "@/actions/stations";
 
-export default function CityForm() {
+export default function StationForm() {
   const [error, setError] = useState<string | undefined>();
+  const [success, setSuccess] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof citySchema>>({
-    resolver: zodResolver(citySchema),
+  const form = useForm<z.infer<typeof stationSchema>>({
+    resolver: zodResolver(stationSchema),
     defaultValues: {
+      name: "",
+      city: "",
       country: "",
-      cityName: "",
-      stationName: "",
-      cityCode: "",
-      locationUrl: "",
-      stationAddress: "",
+      address: "",
+      location: {
+        lat: 0,
+        lng: 0,
+      },
+      code: "",
+      operator: undefined,
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof citySchema>) => {
+  const onSubmit = async (values: z.infer<typeof stationSchema>) => {
     setIsLoading(true);
     try {
-      if (!values) {
-        return;
-      }
-      console.log({ values });
-      const res = await axios.post(`${API_URL}/stations/create/123abc`, {
-        name: values.stationName,
-        city: values.cityName,
-        country: values.country,
-        address: values.stationAddress,
-        location: values.locationUrl,
-        code: values.cityCode,
-      });
-      console.log({ res });
-      setIsLoading(false);
-      toast({ description: "Station added succesfully!" });
+      const message = await createStation(values);
+      setSuccess(message);
+      console.log({ message });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setError("An error occurred while submitting the form.");
+    } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div>
       <Form {...form}>
@@ -88,10 +80,10 @@ export default function CityForm() {
             />
             <FormField
               control={form.control}
-              name="cityName"
+              name="city"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>City Name</FormLabel>
+                  <FormLabel>City</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -105,7 +97,7 @@ export default function CityForm() {
             />
             <FormField
               control={form.control}
-              name="stationName"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Station Name</FormLabel>
@@ -122,10 +114,10 @@ export default function CityForm() {
             />
             <FormField
               control={form.control}
-              name="cityCode"
+              name="code"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>City Code</FormLabel>
+                  <FormLabel>Station Code</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -137,27 +129,49 @@ export default function CityForm() {
                 </FormItem>
               )}
             />
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="location.lat"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Latitude</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isLoading}
+                        placeholder="52.5200"
+                        type="number"
+                        step="any"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="location.lng"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Longitude</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isLoading}
+                        placeholder="13.4050"
+                        type="number"
+                        step="any"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
-              name="locationUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Location URL</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isLoading}
-                      placeholder="Google maps station url"
-                      type="url"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="stationAddress"
+              name="address"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Station Address</FormLabel>
@@ -172,13 +186,15 @@ export default function CityForm() {
                 </FormItem>
               )}
             />
+            {/* Add more fields as needed */}
           </div>
+          <FormSuccess message={success} />
           <FormError message={error} />
           <Button className="w-full" type="submit" disabled={isLoading}>
             {isLoading ? (
               <Loader className="h-3 w-3 animate-spin" />
             ) : (
-              "Add City"
+              "Add Station"
             )}
           </Button>
         </form>

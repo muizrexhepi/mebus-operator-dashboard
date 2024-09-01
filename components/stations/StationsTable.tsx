@@ -1,8 +1,6 @@
 "use client";
-import { citySchema } from "@/schemas";
-import { Search } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { z } from "zod";
 import { Input } from "../ui/input";
 import {
   Table,
@@ -12,49 +10,25 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import { Station } from "@/models/station";
+import { deleteStation } from "@/actions/stations";
+import { toast } from "../ui/use-toast";
 
-interface Station {
-  country: string;
-  cityName: string;
-  stationName: string;
-  cityCode: string;
-  locationUrl: string;
-  stationAddress: string;
-}
-
-const StationsTable = ({
-  cities,
-}: {
-  cities: z.infer<typeof citySchema>[];
-}) => {
+const StationsTable = ({ stations }: { stations: Station[] }) => {
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [formData, setFormData] = useState<Station>({
-    country: "",
-    cityName: "",
-    stationName: "",
-    cityCode: "",
-    locationUrl: "",
-    stationAddress: "",
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormData({
-      country: "",
-      cityName: "",
-      stationName: "",
-      cityCode: "",
-      locationUrl: "",
-      stationAddress: "",
-    });
-  };
-
-  const filteredCities = cities.filter((city) =>
+  const filteredCities = stations.filter((city) =>
     Object.values(city).some((value) =>
       value.toLowerCase().includes(searchTerm.toLowerCase())
     )
   );
+
+  const handleDelete = async (stationId: string) => {
+    await deleteStation(stationId).then((res) => {
+      toast({ description: res });
+    });
+  };
+
   return (
     <>
       <div className="mb-4">
@@ -76,20 +50,21 @@ const StationsTable = ({
               <TableHead>City Name</TableHead>
               <TableHead>Station Name</TableHead>
               <TableHead>City Code</TableHead>
-              <TableHead>Location URL</TableHead>
+              <TableHead>Location</TableHead>
               <TableHead>Station Address</TableHead>
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredCities.map((city, index) => (
+            {filteredCities.map((station: Station, index: number) => (
               <TableRow key={index}>
-                <TableCell>{city.country}</TableCell>
-                <TableCell>{city.cityName}</TableCell>
-                <TableCell>{city.stationName}</TableCell>
-                <TableCell>{city.cityCode}</TableCell>
+                <TableCell>{station.country}</TableCell>
+                <TableCell>{station.name}</TableCell>
+                <TableCell>{station.city}</TableCell>
+                <TableCell>{station.code}</TableCell>
                 <TableCell>
                   <a
-                    href={city.locationUrl}
+                    // href={station.location.lat}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-500 hover:underline"
@@ -97,7 +72,13 @@ const StationsTable = ({
                     View Map
                   </a>
                 </TableCell>
-                <TableCell>{city.stationAddress}</TableCell>
+                <TableCell>{station.address}</TableCell>
+                <TableCell>
+                  <Trash2
+                    className="h-4 w-4 cursor-pointer text-destructive"
+                    onClick={() => handleDelete(station._id)}
+                  />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
