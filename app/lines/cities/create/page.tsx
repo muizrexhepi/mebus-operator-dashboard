@@ -18,7 +18,7 @@ export default async function CityCreate() {
           <CityForm />
         </div>
         <div className="w-full lg:w-2/3">
-          <StationsTable stations={stations} />
+          <StationsTable stations={stations.reverse()} />
         </div>
       </div>
     </div>
