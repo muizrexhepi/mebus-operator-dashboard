@@ -76,7 +76,7 @@ const StationsTable = ({ stations }: { stations: Station[] }) => {
                 <TableCell>
                   <Trash2
                     className="h-4 w-4 cursor-pointer text-destructive"
-                    onClick={() => handleDelete(station._id)}
+                    onClick={() => handleDelete(station._id!)}
                   />
                 </TableCell>
               </TableRow>

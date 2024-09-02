@@ -12,17 +12,17 @@ import {
 
 export const NAV_LINKS = [
   {
-    title: "Lines",
+    title: "Routes",
     icon: Package,
     description: "Manage bus lines, routes, and ticketing.",
     items: [
       {
-        title: "Create Line",
+        title: "Create Route",
         href: "/lines/create",
         description: "Set up a new bus line and define its route.",
       },
       {
-        title: "Edit Lines",
+        title: "Edit routes",
         href: "/lines/edit",
         description: "Modify existing bus lines and update their routes.",
       },
@@ -32,7 +32,7 @@ export const NAV_LINKS = [
         description: "Generate tickets for specific lines and trips.",
       },
       {
-        title: "Add cities",
+        title: "Add stations",
         href: "/lines/cities/create",
         description: "Create cities with their stations so you can use them to create tickets.",
       },

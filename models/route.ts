@@ -2,6 +2,7 @@ import { Operator } from "./operator";
 import { Station } from "./station";
 
 export interface Route {
+    _id?: string;
     code: string;
     contact: {
         phone: string;
@@ -12,8 +13,8 @@ export interface Route {
         to: string,
     },
     stations: {
-        from: Station;
-        to: Station;
+        from: Station | String;
+        to: Station | String;
     },
     operator: Operator | string;
     luggages: {
