@@ -1,4 +1,6 @@
 import { Agency } from "./agency";
+import { Charge } from "./charge";
+import { Operator } from "./operator";
 import { Passenger } from "./passenger";
 import { Route } from "./route";
 import { Station } from "./station";
@@ -6,9 +8,11 @@ import { Ticket } from "./ticket";
 import { User } from "./user";
 
 export interface Booking {
+    _id: string;
     user: User | string;
     ticket: Ticket | string;
     route: Route | string;
+    operator: Operator | string;
     agency: Agency | string;
     departure_date: Date;
     destinations: {
@@ -34,6 +38,7 @@ export interface Booking {
     platform: Platforms;
     is_paid: boolean;
     metadata: BookingMetadata;
+    charge?: Charge;
 }
 
 export interface BookingMetadata {

@@ -1,6 +1,7 @@
 import { CompanyMetadata, Operator, Otp } from "./operator";
 
 export interface Agency {
+    _id: string;
     name: string;
     email: string;
     operator: Operator | string;
@@ -14,6 +15,7 @@ export interface Agency {
         phone: string;
         contact_email: string;
     },
+    password: string;
     financial_data: AgencyFinancialData;
     is_active: boolean;
     is_applicant: boolean;
