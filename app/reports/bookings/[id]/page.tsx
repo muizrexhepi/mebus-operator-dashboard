@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Passenger } from '@/models/passenger'
 import moment from "moment-timezone"
+import Link from 'next/link'
 
 const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
   let booking = null;
@@ -56,11 +57,11 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <MapPinIcon className="text-primary" />
-                        <span className="font-semibold">{booking.labels.from_city}</span>
+                        <span className="font-semibold">{booking?.labels?.from_city}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <MapPinIcon className="text-primary" />
-                        <span className="font-semibold">{booking.labels.to_city}</span>
+                        <span className="font-semibold">{booking?.labels?.to_city}</span>
                       </div>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -173,7 +174,7 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <PhoneIcon className="text-primary" />
-                      <span>{booking.passengers[0].email}</span>
+                      <span>{booking.passengers[0].phone}</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -191,6 +192,9 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                       <span className="text-sm text-gray-600">Payment Intent ID:</span>
                       <span className="font-mono text-xs bg-gray-100 p-1 rounded">{booking.metadata.payment_intent_id}</span>
                     </div>
+                    <div className="flex justify-between items-center">
+                      <Link href={booking.charge?.receipt_url!} className="text-sm text-gray-600 underline">Click here to view receipt</Link>
+                    </div> 
                   </CardContent>
                 </Card>
               </div>
