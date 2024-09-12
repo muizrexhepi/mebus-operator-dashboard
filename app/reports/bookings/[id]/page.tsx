@@ -6,11 +6,13 @@ import { Badge } from "@/components/ui/badge"
 import { Passenger } from '@/models/passenger'
 import moment from "moment-timezone"
 import Link from 'next/link'
+import { Separator } from '@/components/ui/separator'
 
 const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
   let booking = null;
   if (params.id) {
     booking = await getBookingByIdWithChargeData(params.id);
+    console.log({booking})
   }
 
   if (!booking) {
@@ -55,15 +57,20 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
+                      <div className="items-center flex flex-col space-x-2">
                         <MapPinIcon className="text-primary" />
-                        <span className="font-semibold">{booking?.labels?.from_city}</span>
+                        <span className="font-semibold">Departure : {booking?.labels?.from_city}</span>
+                        <span className="text-sm text-black/60">{booking?.destinations?.departure_station_label}</span>
                       </div>
-                      <div className="flex items-center space-x-2">
+                      <div className=" flex flex-col items-center space-x-2">
                         <MapPinIcon className="text-primary" />
-                        <span className="font-semibold">{booking?.labels?.to_city}</span>
+                        <span className="font-semibold">Arrival : {booking?.labels?.to_city}</span>
+                        <span className="text-sm text-black/60">{booking?.destinations?.arrival_station_label}</span>
                       </div>
                     </div>
+                    
+                    <Separator/>
+
                     <div className="flex items-center space-x-2">
                       <CalendarIcon className="text-primary" />
                       <span>{departureDate}</span>
@@ -72,10 +79,7 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                       <ClockIcon className="text-primary" />
                       <span>{moment.utc(booking.departure_date).format("HH:mm")}</span>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <BuildingIcon className="text-primary" />
-                      <span>{typeof booking.operator === 'string' ? booking.operator : booking.operator.name}</span>
-                    </div>
+               
                     <div className="flex items-center space-x-2">
                       <Badge variant="outline">Origin : {booking.platform}</Badge>
                     </div>
@@ -193,7 +197,7 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                       <span className="font-mono text-xs bg-gray-100 p-1 rounded">{booking.metadata.payment_intent_id}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <Link href={booking.charge?.receipt_url!} className="text-sm text-gray-600 underline">Click here to view receipt</Link>
+                      <Link href={booking.charge?.receipt_url!} target='_blank' className="text-sm text-gray-600 underline">Click here to view receipt</Link>
                     </div> 
                   </CardContent>
                 </Card>
