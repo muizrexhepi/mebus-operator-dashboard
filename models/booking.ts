@@ -46,11 +46,43 @@ export interface Booking {
 export interface BookingMetadata {
     transaction_id?: string;
     payment_intent_id: string;
-    travel_flex:string;
+    travel_flex: Flex;
 }
+
 
 export enum Platforms {
     IOS = "ios",
     ANDROID = "android",
     WEB = "web",
 }
+
+export enum Flex {
+    PREMIUM = "premium",
+    BASIC = "basic",
+    NO_FLEX = "no_flex",
+}
+
+export class TravelFlexPermissions {
+    static PREMIUM: { CAN_CANCEL: number; CAN_EDIT: number; SUPPORT: number, RESCHEDULE: number } = {
+        CAN_CANCEL: 2,
+        CAN_EDIT: 1,
+        RESCHEDULE: 3,
+        SUPPORT: Infinity
+    };
+
+    static BASIC: { CAN_CANCEL: number; CAN_EDIT: number; SUPPORT: number, RESCHEDULE: number } = {
+        CAN_CANCEL: 5,
+        CAN_EDIT: 3,
+        RESCHEDULE: 0,
+        SUPPORT: Infinity
+    };
+
+    static NO_FLEX: { CAN_CANCEL: number; CAN_EDIT: number; SUPPORT: number, RESCHEDULE: number } = {
+        CAN_CANCEL: 0,
+        CAN_EDIT: 0,
+        RESCHEDULE: 0,
+        SUPPORT: Infinity
+    };
+}
+
+
