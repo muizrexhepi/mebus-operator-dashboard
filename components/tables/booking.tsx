@@ -4,7 +4,6 @@ import React from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Booking } from '@/models/booking'
 import { Badge } from '../ui/badge'
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
 
 const BookingsTable = ({bookings}: {bookings: Booking[]}) => {
@@ -48,7 +47,7 @@ const BookingsTable = ({bookings}: {bookings: Booking[]}) => {
                   {booking.is_paid ? 'Paid' : 'Unpaid'}
                 </Badge>
               </TableCell>
-              <TableCell>{booking?.route.toString()}</TableCell>
+              <TableCell>{booking?.route?.toString()}</TableCell>
             </TableRow>
           ))}
             </TableBody>

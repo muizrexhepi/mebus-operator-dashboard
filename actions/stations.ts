@@ -3,6 +3,17 @@ import { Station } from "@/models/station"
 import axios from "axios"
 import { revalidatePath } from "next/cache"
 
+
+export async function getStationByOperator(operatorId: string) {
+    try {
+        const res = await axios.get(`${API_URL}/station/operator/${operatorId}`);
+        return res?.data?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 export async function deleteStation (stationId:string) {
     try {
         const res = await axios.post(`${API_URL}/station/delete/${stationId}`)
@@ -13,6 +24,8 @@ export async function deleteStation (stationId:string) {
         console.log(error)
     }
 }
+
+
 export async function createStation(station: Station) {
     try {
         const payload = {
