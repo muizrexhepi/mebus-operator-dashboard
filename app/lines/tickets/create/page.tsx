@@ -5,96 +5,229 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
 import { Station } from "@/models/station";
-import { PlusCircle, X } from "lucide-react"
+import { PlusCircle, X, Info } from "lucide-react"
 import { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 export default function TravelApp() {
-    const [stations, setStations] = useState<Station[]>([]);
-    const [activeStation, setActiveStation] = useState<Station>();
-    const [possibleLines, setPossibleLines] = useState<Station[]>();
-    const [lineData, setLineData] = useState<{[key: string]: {price: string, childrenPrice: string, duration: string, time: string}}>({});
+    const [allStations, setAllStations] = useState<Station[]>([]);
+    const [selectedStations, setSelectedStations] = useState<Station[]>([]);
+    const [activeStation, setActiveStation] = useState<Station | null>(null);
+    const [stationLines, setStationLines] = useState<{[key: string]: Station[]}>({});
+    const [lineData, setLineData] = useState<{[key: string]: {[key: string]: {price: string, childrenPrice: string, duration: string, time: string}}}>({});
+    const [isAddingStation, setIsAddingStation] = useState(false);
+
+    // New state variables for backend compatibility
+    const [routeNumber, setRouteNumber] = useState<string>("");
+    const [destination, setDestination] = useState<string>("");
+    const [departureTime, setDepartureTime] = useState<string>("");
+    const [numberOfTickets, setNumberOfTickets] = useState<number>(48);
+    const [weeksToGenerate, setWeeksToGenerate] = useState<number>(1);
+    const [daysOfWeek, setDaysOfWeek] = useState<number[]>([]);
+    const [metadata, setMetadata] = useState<{[key: string]: string}>({});
 
     useEffect(() => {
         const op_id = "66cba19d1a6e55b32932c59b"
-        getStationByOperator(op_id).then((stations: Station[]) => {
-            setStations(stations);
-            console.log({stations})
+        getStationByOperator(op_id).then((fetchedStations: Station[]) => {
+            setAllStations(fetchedStations);
+            console.log({stations: fetchedStations})
         })        
     }, []);
 
-    const newStations = [
-        { name: "Bratislav", date: "09.10.2024", time: "04:00" },
-        { name: "Berlin", date: "09.10.2024", time: "12:00" },
-        { name: "Hamburg", date: "09.10.2024", time: "18:00" },
-    ]
-
-    useEffect(() => {
-      const pL = stations.filter((station: Station) => station._id !== activeStation?._id);
-      console.log({pL})
-      setPossibleLines(pL);
-    }, [activeStation, stations])
-
-    const handleInputChange = (lineId: string, field: string, value: string) => {
+    const handleInputChange = (stationId: string, lineId: string, field: string, value: string) => {
         setLineData(prev => ({
             ...prev,
-            [lineId]: {
-                ...prev[lineId],
-                [field]: value
+            [stationId]: {
+                ...prev[stationId],
+                [lineId]: {
+                    ...prev[stationId]?.[lineId],
+                    [field]: value
+                }
             }
         }));
     }
 
-    const handleSubmit = () => {
-        console.log("Submitted data:", lineData);
+    const handleDayChange = (day: number) => {
+        setDaysOfWeek(prev => 
+            prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+        );
     }
 
-    const removeLine = (lineId: string) => {
-        setPossibleLines(prevLines => prevLines?.filter(line => line._id !== lineId));
-        setLineData(prevData => {
-            const newData = { ...prevData };
-            delete newData[lineId];
+    const formatStopsData = () => {
+        const formattedStops = [];
+        for (const stationId in lineData) {
+            for (const lineId in lineData[stationId]) {
+                const line = lineData[stationId][lineId];
+                const station = allStations.find(s => s._id === lineId);
+                if (station) {
+                    formattedStops.push({
+                        station: station._id,
+                        price: parseFloat(line.price),
+                        children_price: parseFloat(line.childrenPrice),
+                        time: line.time,
+                        max_buying_time: line.duration // Assuming duration is used as max_buying_time
+                    });
+                }
+            }
+        }
+        return formattedStops;
+    }
+
+    const handleSubmit = () => {
+        const formattedStops = formatStopsData();
+
+        const lineDataForBackend = {
+            route_number: routeNumber,
+            destination: destination || (selectedStations.length > 0 ? selectedStations[selectedStations.length - 1].name : ""),
+            time: departureTime,
+            stops: formattedStops,
+            number_of_tickets: numberOfTickets,
+            metadata,
+            days_of_week: daysOfWeek,
+            weeks_to_generate: weeksToGenerate
+        };
+
+        console.log("Data to be sent to backend:", lineDataForBackend);
+        // Here you would send this data to your backend
+        // For example: sendDataToBackend(lineDataForBackend);
+    }
+
+    // Existing functions remain unchanged
+    const removeLine = (stationId: string, lineId: string) => {
+        setStationLines(prev => ({
+            ...prev,
+            [stationId]: prev[stationId].filter(line => line._id !== lineId)
+        }));
+        setLineData(prev => {
+            const newData = { ...prev };
+            if (newData[stationId]) {
+                delete newData[stationId][lineId];
+            }
             return newData;
         });
     }
 
     const addStation = () => {
+        setIsAddingStation(true);
+    }
 
-        console.log("Add station functionality to be implemented");
+    const selectStation = (station: Station) => {
+        if (!selectedStations.find(s => s._id === station._id)) {
+            setSelectedStations(prev => [...prev, station]);
+            setStationLines(prev => ({
+                ...prev,
+                [station._id!]: allStations.filter(s => s._id !== station._id)
+            }));
+            setLineData(prev => ({
+                ...prev,
+                [station._id!]: {}
+            }));
+        }
+        setIsAddingStation(false);
+    }
+
+    const removeStation = (stationId: string) => {
+        setSelectedStations(prev => prev.filter(s => s._id !== stationId));
+        setStationLines(prev => {
+            const newStationLines = { ...prev };
+            delete newStationLines[stationId];
+            return newStationLines;
+        });
+        setLineData(prev => {
+            const newLineData = { ...prev };
+            delete newLineData[stationId];
+            return newLineData;
+        });
+        if (activeStation?._id === stationId) {
+            setActiveStation(null);
+        }
     }
 
     return (
         <div className="flex justify-center items-start space-x-8 p-8 bg-gray-100 min-h-screen">
+            <Dialog>
+                <DialogTrigger asChild>
+                    <Button 
+                        className="fixed top-4 right-4 z-10" 
+                        variant="outline"
+                    >
+                        <Info className="h-4 w-4 mr-2" />
+                        How to use
+                    </Button>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>How to Create Lines</DialogTitle>
+                        <DialogDescription>
+                            Follow these steps to create lines in the Travel App:
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        <p>1. Add stations using the "Shto stacion të ri" button in the left panel.</p>
+                        <p>2. Click on a station in the left panel to select it.</p>
+                        <p>3. The right panel will show possible lines from the selected station.</p>
+                        <p>4. For each line, enter the price, children's price, start time, and duration.</p>
+                        <p>5. Use the red X button to remove unwanted lines.</p>
+                        <p>6. Click the "Submit" button to save your changes.</p>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
             <Card className="w-80">
                 <CardHeader>
                     <CardTitle>cikidenski</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <ul className="space-y-4">
-                        {stations && stations.map((station, index) => (
-                            <li onClick={()=> setActiveStation(station)} key={index} className={`${activeStation?._id == station._id && "bg-black/10"} flex items-center space-x-4 p-2 rounded cursor-pointer hover:bg-gray-200 transition-colors`}>
-                                <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                                <div>
-                                    <p className="font-semibold">{station.city}</p>
-                                    <p className="text-sm text-gray-500">{station.name}</p>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                    {/* <div className="mt-6 border-t pt-4">
-                        <h3 className="font-semibold mb-2">add a new cikidenski</h3>
+                    {isAddingStation ? (
                         <ul className="space-y-4">
-                            {newStations.map((station, index) => (
-                                <li key={index} className="flex items-center space-x-4">
-                                    <div className="w-2 h-2 bg-gray-300 rounded-full" />
+                            {allStations.map((station, index) => (
+                                <li 
+                                    key={index} 
+                                    onClick={() => selectStation(station)}
+                                    className="flex items-center space-x-4 p-2 rounded cursor-pointer hover:bg-gray-200 transition-colors"
+                                >
+                                    <div className="w-2 h-2 bg-blue-500 rounded-full" />
                                     <div>
-                                        <p className="font-semibold">{station.name}</p>
-                                        <p className="text-sm text-gray-500">{station.date} {station.time}</p>
+                                        <p className="font-semibold">{station.city}</p>
+                                        <p className="text-sm text-gray-500">{station.name}</p>
                                     </div>
                                 </li>
                             ))}
                         </ul>
-                    </div> */}
-                    <Button className="w-full mt-4" variant="outline">
+                    ) : (
+                        <ul className="space-y-4">
+                            {selectedStations.map((station, index) => (
+                                <li 
+                                    key={index}
+                                    className={`${activeStation?._id === station._id && "bg-black/10"} flex items-center justify-between space-x-4 p-2 rounded cursor-pointer hover:bg-gray-200 transition-colors`}
+                                >
+                                    <div className="flex items-center space-x-4" onClick={() => setActiveStation(station)}>
+                                        <div className="w-2 h-2 bg-blue-500 rounded-full" />
+                                        <div>
+                                            <p className="font-semibold">{station.city}</p>
+                                            <p className="text-sm text-gray-500">{station.name}</p>
+                                        </div>
+                                    </div>
+                                    <Button 
+                                        variant="ghost" 
+                                        size="icon"
+                                        onClick={() => removeStation(station._id!)}
+                                        className="h-8 w-8 bg-red-500 text-white"
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                    <Button className="w-full mt-4" variant="outline" onClick={addStation}>
                         <PlusCircle className="mr-2 h-4 w-4" /> Shto stacion të ri
                     </Button>
                 </CardContent>
@@ -106,7 +239,7 @@ export default function TravelApp() {
                 </CardHeader>
                 <CardContent>
                     <ul className="space-y-4">
-                        {activeStation && possibleLines?.map((line) => (
+                        {activeStation && stationLines[activeStation._id!]?.map((line) => (
                             <li key={line._id} className="space-y-2">
                                 <div className="flex justify-between items-center">
                                     <span>{line.city}</span>
@@ -114,7 +247,7 @@ export default function TravelApp() {
                                     <Button 
                                         variant="ghost" 
                                         size="icon" 
-                                        onClick={() => removeLine(line._id!)}
+                                        onClick={() => removeLine(activeStation._id!, line._id!)}
                                         className="h-8 w-8 bg-red-500 text-white"
                                     >
                                         <X className="h-4 w-4" />
@@ -124,34 +257,31 @@ export default function TravelApp() {
                                     <Input 
                                         type="number" 
                                         placeholder="Price" 
-                                        value={lineData[line._id!]?.price || ''} 
-                                        onChange={(e) => handleInputChange(line._id!, 'price', e.target.value)}
+                                        value={lineData[activeStation._id!]?.[line._id!]?.price || ''} 
+                                        onChange={(e) => handleInputChange(activeStation._id!, line._id!, 'price', e.target.value)}
                                     />
                                     <Input 
                                         type="number" 
                                         placeholder="Children price" 
-                                        value={lineData[line._id!]?.childrenPrice || ''} 
-                                        onChange={(e) => handleInputChange(line._id!, 'childrenPrice', e.target.value)}
+                                        value={lineData[activeStation._id!]?.[line._id!]?.childrenPrice || ''} 
+                                        onChange={(e) => handleInputChange(activeStation._id!, line._id!, 'childrenPrice', e.target.value)}
                                     />
                                     <Input 
                                         type="text" 
-                                        placeholder="Statr time" 
-                                        value={lineData[line._id!]?.duration || ''} 
-                                        onChange={(e) => handleInputChange(line._id!, 'time', e.target.value)}
+                                        placeholder="Start time" 
+                                        value={lineData[activeStation._id!]?.[line._id!]?.time || ''} 
+                                        onChange={(e) => handleInputChange(activeStation._id!, line._id!, 'time', e.target.value)}
                                     />
                                     <Input 
                                         type="number" 
                                         placeholder="Duration (hrs)" 
-                                        value={lineData[line._id!]?.duration || ''} 
-                                        onChange={(e) => handleInputChange(line._id!, 'duration', e.target.value)}
+                                        value={lineData[activeStation._id!]?.[line._id!]?.duration || ''} 
+                                        onChange={(e) => handleInputChange(activeStation._id!, line._id!, 'duration', e.target.value)}
                                     />
                                 </div>
                             </li>
                         ))}
                     </ul>
-                    <Button className="w-full mt-4" onClick={addStation} variant="outline">
-                        <PlusCircle className="mr-2 h-4 w-4" /> Add Station
-                    </Button>
                     <Button className="w-full mt-4" onClick={handleSubmit}>
                         Submit
                     </Button>
