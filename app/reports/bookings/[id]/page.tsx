@@ -17,11 +17,11 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
 
   if (!booking) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
+      <div className="flex items-center justify-center h-screen ">
         <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center p-6">
-            <h2 className="mt-4 text-2xl font-bold text-gray-800">Booking Not Found</h2>
-            <p className="mt-2 text-center text-gray-600">We couldn't find the booking you're looking for. Please check the booking ID and try again.</p>
+            <h2 className="mt-4 text-2xl font-bold">Booking Not Found</h2>
+            <p className="mt-2 text-center ">We couldn't find the booking you're looking for. Please check the booking ID and try again.</p>
           </CardContent>
         </Card>
       </div>
@@ -31,10 +31,10 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
   const departureDate = moment.utc(booking.departure_date).format("dddd, DD-MM-YYYY");
 
   return (
-    <div className="min-h-screen bg-gray-100 py-12">
+    <div className="min-h-screen py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <Card className="overflow-hidden shadow-lg">
-          <CardHeader className="bg-primary text-primary-foreground p-6">
+          <CardHeader className="p-6">
             <div className="flex justify-between items-center">
               <div>
                 <h1 className="text-3xl font-bold">Booking Details</h1>
@@ -60,12 +60,12 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                       <div className="items-center flex flex-col space-x-2">
                         <MapPinIcon className="text-primary" />
                         <span className="font-semibold">Departure : {booking?.labels?.from_city}</span>
-                        <span className="text-sm text-black/60">{booking?.destinations?.departure_station_label}</span>
+                        <span className="text-sm ">{booking?.destinations?.departure_station_label}</span>
                       </div>
                       <div className=" flex flex-col items-center space-x-2">
                         <MapPinIcon className="text-primary" />
                         <span className="font-semibold">Arrival : {booking?.labels?.to_city}</span>
-                        <span className="text-sm text-black/60">{booking?.destinations?.arrival_station_label}</span>
+                        <span className="text-sm">{booking?.destinations?.arrival_station_label}</span>
                       </div>
                     </div>
                     
@@ -189,15 +189,15 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                   </CardHeader>
                   <CardContent className="space-y-2">
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Charge ID:</span>
-                      <span className="font-mono text-xs bg-gray-100 p-1 rounded">{booking.charge?.id}</span>
+                      <span className="text-sm ">Charge ID:</span>
+                      <span className="font-mono text-xs p-1 rounded">{booking.charge?.id}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Payment Intent ID:</span>
-                      <span className="font-mono text-xs bg-gray-100 p-1 rounded">{booking.metadata.payment_intent_id}</span>
+                      <span className="text-sm ">Payment Intent ID:</span>
+                      <span className="font-mono text-xs p-1 rounded">{booking.metadata.payment_intent_id}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <Link href={booking.charge?.receipt_url!} target='_blank' className="text-sm text-gray-600 underline">Click here to view receipt</Link>
+                      <Link href={booking.charge?.receipt_url!} target='_blank' className="text-sm  underline">Click here to view receipt</Link>
                     </div> 
                   </CardContent>
                 </Card>

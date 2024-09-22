@@ -24,7 +24,6 @@ export default function TravelApp() {
     const [lineData, setLineData] = useState<{[key: string]: {[key: string]: {price: string, childrenPrice: string, duration: string, time: string}}}>({});
     const [isAddingStation, setIsAddingStation] = useState(false);
 
-    // New state variables for backend compatibility
     const [routeNumber, setRouteNumber] = useState<string>("");
     const [destination, setDestination] = useState<string>("");
     const [departureTime, setDepartureTime] = useState<string>("");
@@ -72,7 +71,7 @@ export default function TravelApp() {
                         price: parseFloat(line.price),
                         children_price: parseFloat(line.childrenPrice),
                         time: line.time,
-                        max_buying_time: line.duration // Assuming duration is used as max_buying_time
+                        max_buying_time: line.duration 
                     });
                 }
             }
@@ -95,11 +94,8 @@ export default function TravelApp() {
         };
 
         console.log("Data to be sent to backend:", lineDataForBackend);
-        // Here you would send this data to your backend
-        // For example: sendDataToBackend(lineDataForBackend);
     }
 
-    // Existing functions remain unchanged
     const removeLine = (stationId: string, lineId: string) => {
         setStationLines(prev => ({
             ...prev,
