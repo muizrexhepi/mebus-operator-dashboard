@@ -17,6 +17,11 @@ export const NAV_LINKS = [
     description: "Manage bus lines, routes, and ticketing.",
     items: [
       {
+        title: "Route capacity",
+        href: "/capacity",
+        description: "See routes capacity, start time and sales report.",
+      },
+      {
         title: "Create Route",
         href: "/lines/create",
         description: "Set up a new bus line and define its route.",

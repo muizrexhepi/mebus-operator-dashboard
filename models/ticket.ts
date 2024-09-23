@@ -4,7 +4,7 @@ import { Stop } from "./stop";
 
 export interface Ticket {
     _id: string;
-    route_number: Route | string;
+    route_number: Route;
     destination: {
         from: string;
         to: string;

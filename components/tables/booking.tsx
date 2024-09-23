@@ -8,10 +8,10 @@ import { useRouter } from 'next/navigation'
 
 const BookingsTable = ({bookings}: {bookings: Booking[]}) => {
     const router = useRouter();
-
     const getById = async (id: string) => {
         router.push("/reports/bookings/"+id)
     }
+    
 
     return (
         <Table>
@@ -29,14 +29,14 @@ const BookingsTable = ({bookings}: {bookings: Booking[]}) => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {bookings?.map((booking: Booking, index) => (
+                {bookings && bookings?.map((booking: Booking, index) => (
             <TableRow onClick={() => getById(booking?._id)} key={index}>
-              <TableCell>{booking.passengers[0].full_name}</TableCell>
-              <TableCell>{booking.passengers[0].email}</TableCell>
-              <TableCell>{booking.passengers[0].phone}</TableCell>
+              <TableCell>{booking?.passengers[0]?.full_name}</TableCell>
+              <TableCell>{booking?.passengers[0]?.email}</TableCell>
+              <TableCell>{booking?.passengers[0]?.phone}</TableCell>
               <TableCell>{booking?.labels?.from_city}</TableCell>
               <TableCell>{booking?.labels?.to_city}</TableCell>
-              <TableCell>${booking.price}</TableCell>
+              <TableCell>${booking?.price?.toFixed(2)}</TableCell>
               <TableCell>
                 <Badge variant={booking.platform === 'web' ? 'default' : booking.platform === 'ios' ? 'secondary' : 'outline'}>
                   {booking.platform}

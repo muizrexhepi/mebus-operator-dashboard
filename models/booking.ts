@@ -47,6 +47,16 @@ export interface BookingMetadata {
     transaction_id?: string;
     payment_intent_id: string;
     travel_flex: Flex;
+    intents: Intents[];
+    created_at: Date;
+}
+
+export enum Intents {
+    CANCEL = "cancel",
+    EDIT_DETAILS = "edit_details",
+    RESCHEDULE = "reschedule",
+    CHANGE_FLEX = "change_flex",
+    REFUND = "refund",
 }
 
 

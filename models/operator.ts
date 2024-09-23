@@ -13,6 +13,9 @@ export interface Operator {
         is_confirmed: boolean;
         message: string;
     },
+    subscriptions: {
+        agencies: boolean;
+    },
     company_metadata: CompanyMetadata;
 
 }
