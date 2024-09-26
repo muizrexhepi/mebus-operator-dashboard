@@ -1,13 +1,11 @@
+"use client"
+
 import Link from "next/link";
 import {
-  Activity,
   ArrowUpRight,
-  CircleUser,
   CreditCard,
   DollarSign,
-  Menu,
-  Package2,
-  Search,
+  Route,
   Users,
 } from "lucide-react";
 
@@ -21,16 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
 import {
   Table,
   TableBody,
@@ -39,8 +28,60 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useEffect, useState } from "react";
+import { API_URL } from "@/environment";
+import axios from "axios";
+import { SYMBOLS } from "@/lib/data";
+import { Booking } from "@/models/booking";
+
+export interface ITopRoute {
+  total_views: number;
+  from_station: string; 
+  to_station: string; 
+  _id: {
+    from: string;
+    to: string;
+  }; 
+}
 
 export default function Dashboard() {
+
+  const [totalRevenue, setTotalRevenue] = useState<number>(0);
+  const [totalPassengers, setTotalPassengers] = useState<number>(0);
+  const [topRoute, setTopRoute] = useState<ITopRoute>();
+  const [lastFiveBookings, setLastFiveBookings] = useState<Booking[]>([]);
+  const [thisMonthsRevenue, setThisMonthsRevenue] = useState<number>(0);
+
+  const fetchAnalytics = async () => {
+    try {
+      const operator_id = "66cba19d1a6e55b32932c59b";
+      const res = await axios.get(`${API_URL}/operator/reports/revenue/${operator_id}`)
+      console.log({data: res.data.data});
+      setTotalRevenue(res.data.data.revenueData[0].revenue);
+      setTotalPassengers(res.data.data.revenueData[0].total_passengers);
+      setTopRoute(res.data.data.topRoute[0]);
+      setThisMonthsRevenue(res.data.data.this_months_revenue[0].revenue);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const fetchLastFiveBookings = async () => {
+    try {
+      const operator_id = "66cba19d1a6e55b32932c59b";
+      const res = await axios.get(`${API_URL}/operator/reports//last-five-bookings/${operator_id}`)
+      console.log({bokings: res.data.data});
+      setLastFiveBookings(res.data.data);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchAnalytics();
+    fetchLastFiveBookings();
+  }, [])
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -53,7 +94,7 @@ export default function Dashboard() {
               <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$45,231.89</div>
+              <div className="text-2xl font-bold">{totalRevenue && totalRevenue.toFixed(2)} {SYMBOLS.EURO}</div>
               <p className="text-xs text-muted-foreground">
                 +20.1% from last month
               </p>
@@ -62,12 +103,12 @@ export default function Dashboard() {
           <Card x-chunk="dashboard-01-chunk-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
-                Subscriptions
+                Total sales
               </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+2350</div>
+              <div className="text-2xl font-bold">{totalPassengers && totalPassengers}</div>
               <p className="text-xs text-muted-foreground">
                 +180.1% from last month
               </p>
@@ -75,28 +116,29 @@ export default function Dashboard() {
           </Card>
           <Card x-chunk="dashboard-01-chunk-2">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Sales</CardTitle>
-              <CreditCard className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Top route</CardTitle>
+              <Route className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+12,234</div>
+              <div className="text-2xl font-bold">{topRoute?.from_station} - {topRoute?.to_station}</div>
               <p className="text-xs text-muted-foreground">
                 +19% from last month
               </p>
             </CardContent>
           </Card>
-          <Card x-chunk="dashboard-01-chunk-3">
+          <Card x-chunk="dashboard-01-chunk-2">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-              <Activity className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium">Revenue this month</CardTitle>
+              <Route className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">+573</div>
+              <div className="text-2xl font-bold">{thisMonthsRevenue && thisMonthsRevenue.toFixed(2) } {SYMBOLS.EURO}</div>
               <p className="text-xs text-muted-foreground">
-                +201 since last hour
+                +19% from last month
               </p>
             </CardContent>
           </Card>
+      
         </div>
         <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
           <Card className="xl:col-span-2" x-chunk="dashboard-01-chunk-4">
@@ -108,7 +150,7 @@ export default function Dashboard() {
                 </CardDescription>
               </div>
               <Button asChild size="sm" className="ml-auto gap-1">
-                <Link href="#">
+                <Link href="/reports/bookings">
                   View All
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
@@ -132,106 +174,30 @@ export default function Dashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      <div className="font-medium">Liam Johnson</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        liam@example.com
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      Sale
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      <Badge className="text-xs" variant="outline">
-                        Approved
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                      2023-06-23
-                    </TableCell>
-                    <TableCell className="text-right">$250.00</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <div className="font-medium">Olivia Smith</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        olivia@example.com
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      Refund
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      <Badge className="text-xs" variant="outline">
-                        Declined
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                      2023-06-24
-                    </TableCell>
-                    <TableCell className="text-right">$150.00</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <div className="font-medium">Noah Williams</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        noah@example.com
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      Subscription
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      <Badge className="text-xs" variant="outline">
-                        Approved
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                      2023-06-25
-                    </TableCell>
-                    <TableCell className="text-right">$350.00</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <div className="font-medium">Emma Brown</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        emma@example.com
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      Sale
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      <Badge className="text-xs" variant="outline">
-                        Approved
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                      2023-06-26
-                    </TableCell>
-                    <TableCell className="text-right">$450.00</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <div className="font-medium">Liam Johnson</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        liam@example.com
-                      </div>
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      Sale
-                    </TableCell>
-                    <TableCell className="hidden xl:table-column">
-                      <Badge className="text-xs" variant="outline">
-                        Approved
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
-                      2023-06-27
-                    </TableCell>
-                    <TableCell className="text-right">$550.00</TableCell>
-                  </TableRow>
+                  {lastFiveBookings.map((booking, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <div className="font-medium">{booking.passengers[0].full_name}</div>
+                        <div className="hidden text-sm text-muted-foreground md:inline">
+                          {booking.passengers[0].email}
+                        </div>
+                      </TableCell>
+                      <TableCell className="hidden xl:table-column">
+                        {booking.is_paid}
+                      </TableCell>
+                      <TableCell className="hidden xl:table-column">
+                        <Badge className="text-xs" variant={booking.is_paid === true ? "outline" : "destructive"}>
+                          {booking.is_paid}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
+                        {new Date(booking.departure_date).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                      {(booking?.price * 0.9).toFixed(2)} {SYMBOLS.EURO}
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </CardContent>

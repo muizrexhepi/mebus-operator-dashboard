@@ -133,3 +133,8 @@ export const NAV_LINKS = [
   },
 
 ];
+
+
+export const SYMBOLS = {
+  EURO : "€",
+}

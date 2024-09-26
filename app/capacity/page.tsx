@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import React, { useEffect, useState } from 'react';
 import { Calendar } from 'lucide-react';
@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import axios, { AxiosResponse } from 'axios';
 import { API_URL } from '../../environment';
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { Ticket } from '@/models/ticket';
 import { Booking } from '@/models/booking';
 import { Route } from '@/models/route';
@@ -23,13 +23,13 @@ interface IData {
 
 const BusSchedule = () => {
     const router = useRouter();
-    const [selectedDate, setSelectedDate] = useState('Sht 23, 2024');
+    const [selectedDate, setSelectedDate] = useState('');
     const [routes, setRoutes] = useState<IData[]>([]);
     const [lines, setLines] = useState<Route[]>([]);
     const [selectedLine, setSelectedLine] = useState<string>('');
     const [expandedRoute, setExpandedRoute] = useState<number | null>(null);
-    const [today, setToday] = useState(new Date());
-    const [afterOneWeek, setAfterOneWeek] = useState(new Date());
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const [stateChanged, setStateChanged] = useState<boolean>(false);
     const [updatedSeats, setUpdatedSeats] = useState<{ [key: string]: number }>({});
     const [deleteRouteId, setDeleteRouteId] = useState<string | null>(null);
@@ -48,7 +48,7 @@ const BusSchedule = () => {
     const fetchCapacityRoutes = async () => {
         try {
             const operator_id = '66cba19d1a6e55b32932c59b';
-            const response: AxiosResponse = await axios.get(`${API_URL}/ticket/capacity-routes?startDate=${today.toISOString()}&endDate=${afterOneWeek.toISOString()}&line=${selectedLine}&operator_id=${operator_id}`);
+            const response: AxiosResponse = await axios.get(`${API_URL}/ticket/capacity-routes?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}&line=${selectedLine}&operator_id=${operator_id}`);
             setRoutes(response.data.data);
         } catch (error) {
             console.log(error);
@@ -56,21 +56,20 @@ const BusSchedule = () => {
     };
 
     useEffect(() => {
-        const now = moment();
-        setToday(now.toDate());
-        setAfterOneWeek(now.add(1, 'week').toDate());
         fetchLines();
     }, []);
 
     useEffect(() => {
-        fetchCapacityRoutes();
-    }, [selectedLine]);
+        if (selectedLine) {
+            fetchCapacityRoutes();
+        }
+    }, [selectedLine, startDate, endDate]);
 
     const handleRouteClick = (id: number) => {
         setExpandedRoute(expandedRoute === id ? null : id);
     };
 
-    const handleLineChange = (e: any) => {
+    const handleLineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = e.target.value;
         if (selectedValue === 'all') {
             const allLineIds = lines.map((route: Route) => route._id).join('-');
@@ -139,16 +138,56 @@ const BusSchedule = () => {
         }
     };
 
+    const setDateRange = (range: string) => {
+        let start, end;
+
+        switch (range) {
+            case 'today':
+                start = moment.utc().startOf('day');
+                end = moment.utc().endOf('day');
+                break;
+            case 'yesterday':
+                start = moment.utc().subtract(1, 'day').startOf('day');
+                end = moment.utc().subtract(1, 'day').endOf('day');
+                break;
+            case 'thisWeek':
+                start = moment.utc().startOf('isoWeek');
+                end = moment.utc().endOf('isoWeek');
+                break;
+            case 'lastWeek':
+                start = moment.utc().subtract(1, 'week').startOf('isoWeek');
+                end = moment.utc().subtract(1, 'week').endOf('isoWeek');
+                break;
+            case 'thisMonth':
+                start = moment.utc().startOf('month');
+                end = moment.utc().endOf('month');
+                break;
+            case 'lastMonth':
+                start = moment.utc().subtract(1, 'month').startOf('month');
+                end = moment.utc().subtract(1, 'month').endOf('month');
+                break;
+            default:
+                start = moment().startOf('day');
+                end = moment().endOf('day');
+        }
+
+        console.log({ start: start.format(), end: end.format() });
+
+        setStartDate(start.toDate());
+        setEndDate(end.toDate());
+        setSelectedDate(`${start.format('MMM DD, YYYY')} - ${end.format('MMM DD, YYYY')}`);
+    };
+
     return (
         <div className="p-4">
             <div className="flex justify-between items-center mb-4">
                 <div className="flex space-x-2">
-                    <Button variant="outline">Today</Button>
-                    <Button variant="outline">Yesterday</Button>
-                    <Button variant="outline">This Week</Button>
-                    <Button variant="outline">Last Week</Button>
-                    <Button variant="outline">This Month</Button>
-                    <Button variant="outline">Last Month</Button>
+                <Button variant="outline" onClick={() => setDateRange('today')}>Today</Button>
+                    <Button variant="outline" onClick={() => setDateRange('yesterday')}>Yesterday</Button>
+                    <Button variant="outline" onClick={() => setDateRange('thisWeek')}>This Week</Button>
+                    <Button variant="outline" onClick={() => setDateRange('lastWeek')}>Last Week</Button>
+                    <Button variant="outline" onClick={() => setDateRange('thisMonth')}>This Month</Button>
+                    <Button variant="outline" onClick={() => setDateRange('lastMonth')}>Last Month</Button>
                 </div>
                 <div className="flex items-center space-x-2">
                     <Calendar className="h-5 w-5" />
