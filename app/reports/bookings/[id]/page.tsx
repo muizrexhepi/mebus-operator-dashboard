@@ -7,6 +7,7 @@ import { Passenger } from '@/models/passenger'
 import moment from "moment-timezone"
 import Link from 'next/link'
 import { Separator } from '@/components/ui/separator'
+import { SYMBOLS } from '@/lib/data'
 
 const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
   let booking = null;
@@ -139,20 +140,30 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                       <span className="font-semibold">Total Price:</span>
                       <span className="text-2xl font-bold">${booking.price.toFixed(2)}</span>
                     </div>
-                    {booking.charge && (
+                    {booking?.charge && (
                       <>
                         <div className="space-y-2">
                           <div className="font-semibold">Charge Details:</div>
                           <div className="flex justify-between">
                             <span>Amount Charged:</span>
-                            <span>${(booking.charge.amount / 100).toFixed(2)}</span>
+                            <span>${(booking?.charge?.amount / 100).toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Mebus Service Fee:</span>
+                            <span>${(booking?.service_fee)?.toFixed(2) || "0.00"}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span>Your Profit:</span>
+                            <span>
+                              {SYMBOLS.EURO} {(booking?.charge?.amount / 100 - (booking?.service_fee || 0)).toFixed(2)}
+                            </span>
                           </div>
                           <div className="flex justify-between">
                             <span>Currency:</span>
-                            <span>{booking.charge.currency.toUpperCase()}</span>
+                            <span>{booking?.charge?.currency?.toUpperCase() || "N/A"}</span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span>Card:</span>
+                            <span>Payment Method:</span>
                             <div className="flex items-center space-x-2">
                               <CreditCardIcon className="text-primary" />
                               <span>{booking.charge.payment_method_details.card.brand.toUpperCase()} **** {booking.charge.payment_method_details.card.last4}</span>
@@ -161,7 +172,7 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                         </div>
                       </>
                     )}
-                  </CardContent>
+ </CardContent>
                 </Card>
 
                 <Card>

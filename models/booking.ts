@@ -37,6 +37,7 @@ export interface Booking {
         },
     },
     price: number;
+    service_fee: number;
     platform: Platforms;
     is_paid: boolean;
     metadata: BookingMetadata;
