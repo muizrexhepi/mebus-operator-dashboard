@@ -5,23 +5,26 @@ import { Booking } from '@/models/booking';
 import BookingsTable from '@/components/tables/booking';
 import { getBookingsByOperatorId } from '@/actions/bookings';
 import { Button } from '@/components/ui/button';
+import { useUser } from '@/context/user';
 
 const ParentComponent = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 10;
-
+  const {user} = useUser(); 
+  console.log({user})
   const fetchBookings = async () => {
-    const operator_id = "66cba19d1a6e55b32932c59b";
-    const result = await getBookingsByOperatorId(operator_id, page, itemsPerPage);
+    const result = await getBookingsByOperatorId(user?.$id!, page, itemsPerPage);
     setBookings(result as Booking[]);
     setTotalPages(Math.ceil(100 / itemsPerPage));
   };
 
   useEffect(() => {
-    fetchBookings();
-  }, [page]);
+    if(user) {
+      fetchBookings();
+    }
+  }, [page, user]);
 
   const handlePreviousPage = () => {
     setPage((prevPage) => Math.max(prevPage - 1, 1));

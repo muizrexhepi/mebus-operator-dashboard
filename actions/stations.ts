@@ -26,7 +26,7 @@ export async function deleteStation (stationId:string) {
 }
 
 
-export async function createStation(station: Station) {
+export async function createStation(station: Station, operatorId: string) {
     try {
         const payload = {
             name: station.name,
@@ -38,7 +38,7 @@ export async function createStation(station: Station) {
         };
 
         const res = await axios.post(
-            `${API_URL}/station/create/66cba19d1a6e55b32932c59b`,
+            `${API_URL}/station/create/${operatorId}`,
             payload
         );
 

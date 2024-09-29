@@ -18,6 +18,7 @@ import { Loader } from 'lucide-react';
 import { FormError } from '@/components/form-error';
 import { FormSuccess } from '@/components/form-success';
 import { createAgency } from '@/actions/agency';
+import { useUser } from '@/context/user';
 
 const agencySchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -52,6 +53,7 @@ export default function AgencyForm() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const {user} = useUser();
 
   const form = useForm({
     resolver: zodResolver(agencySchema),
@@ -76,7 +78,7 @@ export default function AgencyForm() {
   const onSubmit = async (values: z.infer<typeof agencySchema>) => {
     setIsLoading(true);
     try {
-      const message = await createAgency(values, "66cba19d1a6e55b32932c59b");
+      const message = await createAgency(values, user?.$id);
       setSuccess(message);
       console.log({ message });
     } catch (error) {

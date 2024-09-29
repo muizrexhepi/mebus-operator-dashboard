@@ -78,11 +78,11 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                     </div>
                     <div className="flex items-center space-x-2">
                       <ClockIcon className="text-primary" />
-                      <span>{moment.utc(booking.departure_date).format("HH:mm")}</span>
+                      <span>{moment.utc(booking?.departure_date).format("HH:mm")}</span>
                     </div>
                
                     <div className="flex items-center space-x-2">
-                      <Badge variant="outline">Origin : {booking.platform}</Badge>
+                      <Badge variant="outline">Origin : {booking?.platform}</Badge>
                     </div>
                   </CardContent>
                 </Card>
@@ -106,19 +106,19 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                       <CardContent className="space-y-2">
                         <div className="flex justify-between items-center">
                           <span className="font-semibold">Full Name:</span>
-                          <span>{passenger.full_name}</span>
+                          <span>{passenger?.full_name}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="font-semibold">Email:</span>
-                          <span>{passenger.email}</span>
+                          <span>{passenger?.email}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="font-semibold">Phone:</span>
-                          <span>{passenger.phone}</span>
+                          <span>{passenger?.phone}</span>
                         </div>
                         <div className="flex justify-between items-center">
                           <span className="font-semibold">Price:</span>
-                          <Badge variant="secondary">${passenger.price.toFixed(2)}</Badge>
+                          <Badge variant="secondary">${passenger?.price?.toFixed(2)}</Badge>
                         </div>
                       </CardContent>
                     </Card>
@@ -138,7 +138,7 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                   <CardContent className="space-y-4">
                     <div className="flex justify-between items-center">
                       <span className="font-semibold">Total Price:</span>
-                      <span className="text-2xl font-bold">${booking.price.toFixed(2)}</span>
+                      <span className="text-2xl font-bold">${booking?.price?.toFixed(2)}</span>
                     </div>
                     {booking?.charge && (
                       <>
@@ -146,7 +146,7 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                           <div className="font-semibold">Charge Details:</div>
                           <div className="flex justify-between">
                             <span>Amount Charged:</span>
-                            <span>${(booking?.charge?.amount / 100).toFixed(2)}</span>
+                            <span>${(booking?.price).toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between">
                             <span>Mebus Service Fee:</span>
@@ -155,7 +155,7 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                           <div className="flex justify-between">
                             <span>Your Profit:</span>
                             <span>
-                              {SYMBOLS.EURO} {(booking?.charge?.amount / 100 - (booking?.service_fee || 0)).toFixed(2)}
+                              {SYMBOLS.EURO} {(booking?.price - (booking?.service_fee || 0)).toFixed(2)}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -166,7 +166,7 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                             <span>Payment Method:</span>
                             <div className="flex items-center space-x-2">
                               <CreditCardIcon className="text-primary" />
-                              <span>{booking.charge.payment_method_details.card.brand.toUpperCase()} **** {booking.charge.payment_method_details.card.last4}</span>
+                              <span>{booking?.charge?.payment_method_details?.card?.brand?.toUpperCase()} **** {booking?.charge?.payment_method_details?.card?.last4}</span>
                             </div>
                           </div>
                         </div>

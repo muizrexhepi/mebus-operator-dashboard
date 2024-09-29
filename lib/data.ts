@@ -27,17 +27,12 @@ export const NAV_LINKS = [
         description: "Set up a new bus line and define its route.",
       },
       {
-        title: "Edit routes",
-        href: "/lines/edit",
-        description: "Modify existing bus lines and update their routes.",
-      },
-      {
         title: "Create Tickets",
         href: "/lines/tickets/create",
         description: "Generate tickets for specific lines and trips.",
       },
       {
-        title: "Add stations",
+        title: "Create stations",
         href: "/lines/cities/create",
         description: "Create cities with their stations so you can use them to create tickets.",
       },
@@ -52,21 +47,6 @@ export const NAV_LINKS = [
         title: "Create Agency",
         href: "/agencies/create",
         description: "Set up a new bus line and define its route.",
-      },
-      {
-        title: "Edit Lines",
-        href: "/lines/edit",
-        description: "Modify existing bus lines and update their routes.",
-      },
-      {
-        title: "Create Tickets",
-        href: "/lines/tickets/create",
-        description: "Generate tickets for specific lines and trips.",
-      },
-      {
-        title: "Add cities",
-        href: "/lines/cities/create",
-        description: "Create cities with their stations so you can use them to create tickets.",
       },
     ],
   },
@@ -120,9 +100,9 @@ export const NAV_LINKS = [
         description: "View detailed reports on bookings made.",
       },
       {
-        title: "Sales Reports",
+        title: "Debts",
         href: "/reports/sales",
-        description: "Analyze sales data to track revenue and trends.",
+        description: "See how much debt we owe you.",
       },
       {
         title: "Online Services",
@@ -137,4 +117,9 @@ export const NAV_LINKS = [
 
 export const SYMBOLS = {
   EURO : "€",
+}
+
+
+export const USER_LABELS = {
+  OPERATOR: "operator",
 }

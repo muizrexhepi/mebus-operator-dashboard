@@ -28,12 +28,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Station } from "@/models/station";
+import { useUser } from "@/context/user";
 
 export default function RouteForm({ stations }: { stations: Station[] }) {
   const [error, setError] = useState<string | undefined>();
   const [success, setSuccess] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const {user} = useUser();
 
 
   const form = useForm<z.infer<typeof routeSchema>>({
@@ -69,7 +70,7 @@ export default function RouteForm({ stations }: { stations: Station[] }) {
   const onSubmit = async (values: z.infer<typeof routeSchema>) => {
     setIsLoading(true);
     try {
-      const message = await createRoute(values, "66cba19d1a6e55b32932c59b");
+      const message = await createRoute(values, user?.$id);
       setSuccess(message);
       console.log({ message });
     } catch (error) {

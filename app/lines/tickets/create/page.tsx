@@ -19,6 +19,7 @@ import { API_URL } from "@/environment";
 import axios, { AxiosResponse } from "axios";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Route } from "@/models/route";
+import { useUser } from "@/context/user";
 
 
 
@@ -41,6 +42,7 @@ export default function TravelApp() {
     const [daysOfWeek, setDaysOfWeek] = useState<number[]>([]);
     const [metadata, setMetadata] = useState<{[key: string]: string}>({});
 
+    const {user} = useUser();
 
     const RouteDropdown = () => (
         <Select onValueChange={(value) => {
@@ -62,12 +64,14 @@ export default function TravelApp() {
     console.log({routeNumber})
 
     useEffect(() => {
-        const op_id = "66cba19d1a6e55b32932c59b"
-        getStationByOperator(op_id).then((fetchedStations: Station[]) => {
-            setAllStations(fetchedStations);
-            console.log({stations: fetchedStations})
-        })        
-    }, []);
+        if(user) {
+            const op_id = user?.$id;
+            getStationByOperator(op_id!).then((fetchedStations: Station[]) => {
+                setAllStations(fetchedStations);
+                console.log({stations: fetchedStations})
+            })        
+        }
+    }, [user]);
 
     const getRoutes = async () => {
         try {
@@ -79,8 +83,10 @@ export default function TravelApp() {
     }
 
     useEffect(() => {
-        getRoutes();
-    }, []);
+        if(user) {
+            getRoutes();
+        }
+    }, [user]);
 
     const handleInputChange = (stationId: string, lineId: string, field: string, value: string) => {
         setLineData(prev => ({
@@ -151,7 +157,7 @@ export default function TravelApp() {
             weeks_to_generate: weeksToGenerate
         };
     
-        const operator_id = "66cba19d1a6e55b32932c59b";
+        const operator_id = user?.$id;
     
         try {
             console.log({lineDataForBackend})

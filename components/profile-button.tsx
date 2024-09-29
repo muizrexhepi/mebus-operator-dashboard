@@ -9,11 +9,24 @@ import {
 import { Button } from "./ui/button";
 import { CircleUser } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { account } from "@/appwrite.config";
+import { HELP_URL } from "@/environment";
 
 const ProfileButton = () => {
   const router = useRouter();
 
-  const handleLogout = () => {};
+  const handleLogout = async () => {
+    await account.deleteSessions();
+    router.push('/login')
+  };
+
+  const handleSettings = async () => {
+    router.push('/settings')
+  };
+
+  const handleSupport = async () => {
+    router.push(HELP_URL)
+  };
 
   return (
     <DropdownMenu>
@@ -26,8 +39,8 @@ const ProfileButton = () => {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Settings</DropdownMenuItem>
-        <DropdownMenuItem>Support</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleSettings}>Settings</DropdownMenuItem>
+        <DropdownMenuItem onClick={handleSupport}>Help</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
       </DropdownMenuContent>

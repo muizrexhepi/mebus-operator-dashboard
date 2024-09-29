@@ -20,7 +20,7 @@ export function HeaderNavigationMenu() {
   const path = usePathname();
 
   return (
-    <NavigationMenu>
+    <NavigationMenu className="!z-50 bg-white">
       <NavigationMenuList>
         <NavigationMenuItem>
           <Link href="/" legacyBehavior passHref>

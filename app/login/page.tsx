@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog";
@@ -25,14 +23,14 @@ import {
   FormMessage,
 } from "../../components/ui/form";
 import { Loader } from "lucide-react";
-import Image from "next/image";
 import { FormError } from "@/components/form-error";
-import { handleFacebookLogin, handleGoogleLogin } from "@/actions/oauth";
 import { account } from "@/appwrite.config";
+import { USER_LABELS } from "@/lib/data";
 
 const LoginForm = ({ isOpen }: { isOpen: boolean }) => {
   const [error, setError] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -40,6 +38,7 @@ const LoginForm = ({ isOpen }: { isOpen: boolean }) => {
       password: "",
     },
   });
+
 
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setIsLoading(true);
@@ -51,14 +50,24 @@ const LoginForm = ({ isOpen }: { isOpen: boolean }) => {
         password: values.password,
       };
 
-      const newUser = await account.createEmailPasswordSession(
+      await account.createEmailPasswordSession(
         user.email,
         user.password
       );
+
+      const newUser = await account.get();
+
+      if(newUser.labels[0] !== USER_LABELS.OPERATOR) {
+        setIsLoading(false)
+        await account.deleteSessions();
+        return setError("Not authorized");
+      }
+
       if (newUser) {
         window.dispatchEvent(new Event("userChange"));
         setError("");
         setIsLoading(false);
+        router.push('/')
       }
     } catch (error: any) {
       setError(error.message || "Something went wrong!");
@@ -66,6 +75,7 @@ const LoginForm = ({ isOpen }: { isOpen: boolean }) => {
       setIsLoading(false);
     }
   };
+
 
   return (
     <Dialog open={true}>
@@ -122,49 +132,7 @@ const LoginForm = ({ isOpen }: { isOpen: boolean }) => {
             </Button>
           </form>
         </Form>
-        <div className="relative flex items-center">
-          <div className="flex-grow border-t border-gray-400"></div>
-          <span className="flex-shrink mx-3 text-gray-700 text-sm">or</span>
-          <div className="flex-grow border-t border-gray-400"></div>
-        </div>
-        <div className="space-y-3">
-          <Button
-            className="w-full relative"
-            onClick={handleGoogleLogin}
-            variant={"outline"}
-            disabled={isLoading}
-          >
-            <Image
-              src="/assets/icons/googleIcon.svg"
-              width={20}
-              height={20}
-              alt="Google icon"
-              className="absolute left-4"
-            />
-            Continue with Google
-          </Button>
-          <Button
-            className="w-full relative"
-            onClick={handleFacebookLogin}
-            variant={"outline"}
-            disabled={isLoading}
-          >
-            <Image
-              src="/assets/icons/facebookIcon.svg"
-              width={20}
-              height={20}
-              alt="Facebook icon"
-              className="absolute left-4"
-            />
-            Continue with Facebook
-          </Button>
-        </div>
-        {/* <DialogFooter className="bg-[#f7fafc]/80 rounded flex justify-center items-center space-x-2 py-5 text-sm">
-          <p>New to MediSearch?</p>
-          <Link href={"/register"} className="text-indigo-500 font-semibold">
-            Create account
-          </Link>
-        </DialogFooter> */}
+    
       </DialogContent>
     </Dialog>
   );

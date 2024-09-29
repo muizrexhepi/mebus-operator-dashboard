@@ -33,6 +33,7 @@ import axios from "axios";
 import { SYMBOLS } from "@/lib/data";
 import { Booking } from "@/models/booking";
 import { useRouter } from "next/navigation";
+import { useUser } from "@/context/user";
 
 export interface ITopRoute {
   total_views: number;
@@ -52,9 +53,11 @@ export default function Dashboard() {
   const [lastFiveBookings, setLastFiveBookings] = useState<Booking[]>([]);
   const [thisMonthsRevenue, setThisMonthsRevenue] = useState<number>(0);
 
+  const { user } = useUser();
+
   const fetchAnalytics = async () => {
     try {
-      const operator_id = "66cba19d1a6e55b32932c59b";
+      const operator_id = user?.$id;
 
       const res = await axios.get(`${API_URL}/operator/reports/revenue/${operator_id}`)
       console.log({data: res.data.data});
@@ -69,8 +72,8 @@ export default function Dashboard() {
 
   const fetchLastFiveBookings = async () => {
     try {
-      const operator_id = "66cba19d1a6e55b32932c59b";
-      const res = await axios.get(`${API_URL}/operator/reports//last-five-bookings/${operator_id}`)
+      const operator_id = user?.$id;
+      const res = await axios.get(`${API_URL}/operator/reports/last-five-bookings/${operator_id}`)
       console.log({bokings: res.data.data});
       setLastFiveBookings(res.data.data);
     } catch (error) {
@@ -79,9 +82,11 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
-    fetchAnalytics();
-    fetchLastFiveBookings();
-  }, [])
+    if(user) {
+      fetchAnalytics();
+      fetchLastFiveBookings();
+    }
+  }, [user])
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -98,6 +103,18 @@ export default function Dashboard() {
               <div className="text-2xl font-bold">{totalRevenue && totalRevenue.toFixed(2)} {SYMBOLS.EURO}</div>
               <p className="text-xs text-muted-foreground">
                 +20.1% from last month
+              </p>
+            </CardContent>
+          </Card>
+          <Card x-chunk="dashboard-01-chunk-2">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Revenue this month</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{thisMonthsRevenue && thisMonthsRevenue.toFixed(2) } {SYMBOLS.EURO}</div>
+              <p className="text-xs text-muted-foreground">
+                +19% from last month
               </p>
             </CardContent>
           </Card>
@@ -127,18 +144,7 @@ export default function Dashboard() {
               </p>
             </CardContent>
           </Card>
-          <Card x-chunk="dashboard-01-chunk-2">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Revenue this month</CardTitle>
-              <Route className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{thisMonthsRevenue && thisMonthsRevenue.toFixed(2) } {SYMBOLS.EURO}</div>
-              <p className="text-xs text-muted-foreground">
-                +19% from last month
-              </p>
-            </CardContent>
-          </Card>
+
       
         </div>
         <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
@@ -195,7 +201,7 @@ export default function Dashboard() {
                         {new Date(booking.departure_date).toLocaleDateString()}
                       </TableCell>
                       <TableCell className="text-right">
-                      {(booking?.price * 0.9).toFixed(2)} {SYMBOLS.EURO}
+                      {(booking?.price - booking?.service_fee).toFixed(2)} {SYMBOLS.EURO}
                       </TableCell>
                     </TableRow>
                   ))}

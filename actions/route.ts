@@ -28,7 +28,7 @@ export async function createRoute(route: Route, operator_id: string) {
         };
 
         const res = await axios.post(
-            `${API_URL}/route/create/${operator_id || "66cba19d1a6e55b32932c59b" }`,
+            `${API_URL}/route/create/${operator_id}`,
             payload
         );
 

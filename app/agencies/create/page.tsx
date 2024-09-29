@@ -1,20 +1,37 @@
+"use client"
+
 import AgenciesTable from '@/components/agencies/AgenciesTable'
 import AgencyForm from '@/components/forms/create-agency-form'
+import { useUser } from '@/context/user';
 import { API_URL } from '@/environment';
+import { Agency } from '@/models/agency';
 import axios from 'axios';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 
 
-const page = async () => {
-    const operator_id = "66cba19d1a6e55b32932c59b";
+const page = () => {
+    const [agencies, setAgencies] = useState<Agency[]>([]) 
+    const {user} = useUser()
   
-    const res = await axios.get(
-      `${API_URL}/agency/operator/${operator_id}`
-    );
-    const agencies = res.data?.data;
+    const getAgencies = async () => {
+      try {
+        const res = await axios.get(
+          `${API_URL}/agency/operator/${user?.$id}`
+        );
+        console.log({ bardh: res.data.data });
+        setAgencies(res.data?.data);
+        
+      } catch (error) {
+        console.log(error)
+      }
+    }
   
-    console.log({ bardh: res.data.data });
+    useEffect(() => {
+      if(user) {
+        getAgencies();
+      }
+    }, [user])
 
     return (
         <div className="container mx-auto px-4 sm:px-6 py-20 sm:py-10">
@@ -31,4 +48,4 @@ const page = async () => {
     )
 }
 
-export default page
+export default page;

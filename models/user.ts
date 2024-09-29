@@ -7,3 +7,11 @@ export interface User {
     fcm_token: string;
     points: number;
 };
+
+export interface AppwriteUser {
+    $id: string;
+    email: string;
+    phone: string;
+    name: string;
+    labels: string[];
+}

@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { deactivateTicket, reactivateTicket } from '@/actions/ticket';
 import { Input } from '@/components/ui/input';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { useUser } from '@/context/user';
 
 interface IData {
     ticket: Ticket;
@@ -25,18 +26,19 @@ const BusSchedule = () => {
     const router = useRouter();
     const [selectedDate, setSelectedDate] = useState('');
     const [routes, setRoutes] = useState<IData[]>([]);
-    const [lines, setLines] = useState<Route[]>([]);
     const [selectedLine, setSelectedLine] = useState<string>('');
     const [expandedRoute, setExpandedRoute] = useState<number | null>(null);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [stateChanged, setStateChanged] = useState<boolean>(false);
     const [updatedSeats, setUpdatedSeats] = useState<{ [key: string]: number }>({});
     const [deleteRouteId, setDeleteRouteId] = useState<string | null>(null);
+    const [lines, setLines] = useState<Route[]>([]);
+
+    const { user } = useUser();
 
     const fetchLines = async () => {
         try {
-            const response: AxiosResponse = await axios.get(`${API_URL}/route`);
+            const response: AxiosResponse = await axios.get(`${API_URL}/route/operator/${user?.$id}`);
             const lineIds = response.data.data.map((route: Route) => route._id).join('-');
             setLines(response.data.data);
             setSelectedLine(lineIds); 
@@ -47,7 +49,7 @@ const BusSchedule = () => {
 
     const fetchCapacityRoutes = async () => {
         try {
-            const operator_id = '66cba19d1a6e55b32932c59b';
+            const operator_id = user?.$id;
             const response: AxiosResponse = await axios.get(`${API_URL}/ticket/capacity-routes?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}&line=${selectedLine}&operator_id=${operator_id}`);
             setRoutes(response.data.data);
         } catch (error) {
@@ -56,14 +58,16 @@ const BusSchedule = () => {
     };
 
     useEffect(() => {
-        fetchLines();
-    }, []);
+        if(user) {
+            fetchLines();
+        }
+    }, [user]);
 
     useEffect(() => {
-        if (selectedLine) {
+        if (selectedLine && user) {
             fetchCapacityRoutes();
         }
-    }, [selectedLine, startDate, endDate]);
+    }, [selectedLine, startDate, endDate, user]);
 
     const handleRouteClick = (id: number) => {
         setExpandedRoute(expandedRoute === id ? null : id);
