@@ -3,7 +3,6 @@
 import Link from "next/link";
 import {
   ArrowUpRight,
-  CreditCard,
   DollarSign,
   Route,
   Users,
@@ -33,6 +32,7 @@ import { API_URL } from "@/environment";
 import axios from "axios";
 import { SYMBOLS } from "@/lib/data";
 import { Booking } from "@/models/booking";
+import { useRouter } from "next/navigation";
 
 export interface ITopRoute {
   total_views: number;
@@ -45,7 +45,7 @@ export interface ITopRoute {
 }
 
 export default function Dashboard() {
-
+  const router = useRouter()
   const [totalRevenue, setTotalRevenue] = useState<number>(0);
   const [totalPassengers, setTotalPassengers] = useState<number>(0);
   const [topRoute, setTopRoute] = useState<ITopRoute>();
@@ -55,6 +55,7 @@ export default function Dashboard() {
   const fetchAnalytics = async () => {
     try {
       const operator_id = "66cba19d1a6e55b32932c59b";
+
       const res = await axios.get(`${API_URL}/operator/reports/revenue/${operator_id}`)
       console.log({data: res.data.data});
       setTotalRevenue(res.data.data.revenueData[0].revenue);
@@ -116,7 +117,7 @@ export default function Dashboard() {
           </Card>
           <Card x-chunk="dashboard-01-chunk-2">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Top route</CardTitle>
+              <CardTitle className="text-sm font-medium">Most viewed route by clients</CardTitle>
               <Route className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -161,26 +162,26 @@ export default function Dashboard() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Customer</TableHead>
-                    <TableHead className="hidden xl:table-column">
-                      Type
-                    </TableHead>
-                    <TableHead className="hidden xl:table-column">
-                      Status
-                    </TableHead>
-                    <TableHead className="hidden xl:table-column">
-                      Date
-                    </TableHead>
+                      <TableHead className="hidden xl:table-column">
+                        Type
+                      </TableHead>
+                      <TableHead className="hidden xl:table-column">
+                        Status
+                      </TableHead>
+                      <TableHead className="hidden xl:table-column">
+                        Date
+                      </TableHead>
                     <TableHead className="text-right">Amount</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {lastFiveBookings.map((booking, index) => (
-                    <TableRow key={index}>
+                  {lastFiveBookings?.map((booking, index) => (
+                    <TableRow key={index} onClick={() => router.push(`/reports/bookings/${booking?._id}`)}>
                       <TableCell>
                         <div className="font-medium">{booking.passengers[0].full_name}</div>
                         <div className="hidden text-sm text-muted-foreground md:inline">
                           {booking.passengers[0].email}
-                        </div>
+                        </div>  
                       </TableCell>
                       <TableCell className="hidden xl:table-column">
                         {booking.is_paid}

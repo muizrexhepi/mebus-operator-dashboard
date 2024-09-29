@@ -15,8 +15,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { API_URL } from "@/environment";
+import axios, { AxiosResponse } from "axios";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Route } from "@/models/route";
+
+
 
 export default function TravelApp() {
+
+
     const [allStations, setAllStations] = useState<Station[]>([]);
     const [selectedStations, setSelectedStations] = useState<Station[]>([]);
     const [activeStation, setActiveStation] = useState<Station | null>(null);
@@ -25,12 +33,33 @@ export default function TravelApp() {
     const [isAddingStation, setIsAddingStation] = useState(false);
 
     const [routeNumber, setRouteNumber] = useState<string>("");
+    const [routes, setRoutes] = useState<Route[]>([]);
     const [destination, setDestination] = useState<string>("");
-    const [departureTime, setDepartureTime] = useState<string>("");
-    const [numberOfTickets, setNumberOfTickets] = useState<number>(48);
+    const [departureTime, setDepartureTime] = useState<string>("09:00");
+    const [numberOfTickets, setNumberOfTickets] = useState<number>(6);
     const [weeksToGenerate, setWeeksToGenerate] = useState<number>(1);
     const [daysOfWeek, setDaysOfWeek] = useState<number[]>([]);
     const [metadata, setMetadata] = useState<{[key: string]: string}>({});
+
+
+    const RouteDropdown = () => (
+        <Select onValueChange={(value) => {
+            setRouteNumber(value);
+        }}>
+            <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select a route" />
+            </SelectTrigger>
+            <SelectContent>
+                {routes?.map((route: Route) => (
+                    <SelectItem key={route._id} value={route._id!}>
+                        {route.code}
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
+    );
+
+    console.log({routeNumber})
 
     useEffect(() => {
         const op_id = "66cba19d1a6e55b32932c59b"
@@ -38,6 +67,19 @@ export default function TravelApp() {
             setAllStations(fetchedStations);
             console.log({stations: fetchedStations})
         })        
+    }, []);
+
+    const getRoutes = async () => {
+        try {
+            const res: AxiosResponse = await axios.get(`${API_URL}/route`)
+            setRoutes(res.data.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        getRoutes();
     }, []);
 
     const handleInputChange = (stationId: string, lineId: string, field: string, value: string) => {
@@ -78,22 +120,46 @@ export default function TravelApp() {
         }
         return formattedStops;
     }
-
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const formattedStops = formatStopsData();
-
+    
+        const fromStation = selectedStations[0];
+        const toStation = selectedStations[selectedStations.length - 1];
+    
         const lineDataForBackend = {
             route_number: routeNumber,
-            destination: destination || (selectedStations.length > 0 ? selectedStations[selectedStations.length - 1].name : ""),
+            destination: {
+                from: fromStation.name,
+                to: toStation.name
+            },
             time: departureTime,
-            stops: formattedStops,
+            stops: formattedStops.map(stop => ({
+                from: stop.station,
+                to: stop.station, 
+                time: stop.time,
+                price: stop.price,
+                children_price: stop.children_price,
+                max_buying_time: stop.max_buying_time
+            })),
             number_of_tickets: numberOfTickets,
-            metadata,
-            days_of_week: daysOfWeek,
+            metadata: {
+                ...metadata,
+                operator_name: "Cikidenski cikeden",
+                operator_company_name: "Cikidenski cikeden doo",
+            },
+            days_of_week: ["0", "1"],
             weeks_to_generate: weeksToGenerate
         };
-
-        console.log("Data to be sent to backend:", lineDataForBackend);
+    
+        const operator_id = "66cba19d1a6e55b32932c59b";
+    
+        try {
+            console.log({lineDataForBackend})
+            const response = await axios.post(`${API_URL}/ticket/create/${operator_id}`, lineDataForBackend);
+            console.log("Response from backend:", response.data);
+        } catch (error) {
+            console.error("Error sending data to backend:", error);
+        }
     }
 
     const removeLine = (stationId: string, lineId: string) => {
@@ -148,6 +214,7 @@ export default function TravelApp() {
 
     return (
         <div className="flex justify-center items-start space-x-8 p-8 bg-gray-100 min-h-screen">
+            <RouteDropdown />
             <Dialog>
                 <DialogTrigger asChild>
                     <Button 
@@ -269,8 +336,8 @@ export default function TravelApp() {
                                         onChange={(e) => handleInputChange(activeStation._id!, line._id!, 'time', e.target.value)}
                                     />
                                     <Input 
-                                        type="number" 
-                                        placeholder="Duration (hrs)" 
+                                        type="text" 
+                                        placeholder="Max buying time" 
                                         value={lineData[activeStation._id!]?.[line._id!]?.duration || ''} 
                                         onChange={(e) => handleInputChange(activeStation._id!, line._id!, 'duration', e.target.value)}
                                     />

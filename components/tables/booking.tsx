@@ -12,7 +12,6 @@ const BookingsTable = ({bookings}: {bookings: Booking[]}) => {
         router.push("/reports/bookings/"+id)
     }
     
-
     return (
         <Table>
             <TableHeader>
@@ -30,26 +29,26 @@ const BookingsTable = ({bookings}: {bookings: Booking[]}) => {
             </TableHeader>
             <TableBody>
                 {bookings && bookings?.map((booking: Booking, index) => (
-            <TableRow onClick={() => getById(booking?._id)} key={index}>
-              <TableCell>{booking?.passengers[0]?.full_name}</TableCell>
-              <TableCell>{booking?.passengers[0]?.email}</TableCell>
-              <TableCell>{booking?.passengers[0]?.phone}</TableCell>
-              <TableCell>{booking?.labels?.from_city}</TableCell>
-              <TableCell>{booking?.labels?.to_city}</TableCell>
-              <TableCell>${booking?.price?.toFixed(2)}</TableCell>
-              <TableCell>
-                <Badge variant={booking.platform === 'web' ? 'default' : booking.platform === 'ios' ? 'secondary' : 'outline'}>
-                  {booking.platform}
-                </Badge>
-              </TableCell>
-              <TableCell>
-                <Badge className={`${booking?.is_paid ? "bg-emerald-700" : "bg-destructive"}`}>
-                  {booking.is_paid ? 'Paid' : 'Unpaid'}
-                </Badge>
-              </TableCell>
-              <TableCell>{booking?.route?.toString()}</TableCell>
-            </TableRow>
-          ))}
+                    <TableRow onClick={() => getById(booking?._id)} key={index}>
+                        <TableCell>{booking?.passengers[0]?.full_name}</TableCell>
+                        <TableCell>{booking?.passengers[0]?.email}</TableCell>
+                        <TableCell>{booking?.passengers[0]?.phone}</TableCell>
+                        <TableCell>{booking?.labels?.from_city}</TableCell>
+                        <TableCell>{booking?.labels?.to_city}</TableCell>
+                        <TableCell>${booking?.price?.toFixed(2)}</TableCell>
+                        <TableCell>
+                            <Badge variant={booking.platform === 'web' ? 'default' : booking.platform === 'ios' ? 'secondary' : 'outline'}>
+                                {booking.platform}
+                            </Badge>
+                        </TableCell>
+                        <TableCell>
+                            <Badge className={`${booking?.is_paid ? "bg-emerald-700" : "bg-destructive"}`}>
+                                {booking.is_paid ? 'Paid' : 'Unpaid'}
+                            </Badge>
+                        </TableCell>
+                        <TableCell>{booking?.route?.toString()}</TableCell>
+                    </TableRow>
+                ))}
             </TableBody>
         </Table>
     )
