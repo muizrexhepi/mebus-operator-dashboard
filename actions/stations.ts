@@ -13,6 +13,15 @@ export async function getStationByOperator(operatorId: string) {
     }
 }
 
+export async function getAllStations() {
+    try {
+        const res = await axios.get(`${API_URL}/station`);
+        return res?.data?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 export async function deleteStation (stationId:string) {
     try {

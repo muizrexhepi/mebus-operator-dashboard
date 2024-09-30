@@ -61,7 +61,7 @@ export default function CreateEmployee() {
         title: "Success",
         description: "Employee created successfully!",
       })
-      // Reset form
+
       setName('')
       setEmail('')
       setPassword('')

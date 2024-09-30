@@ -38,7 +38,9 @@ const BusSchedule = () => {
 
     const fetchLines = async () => {
         try {
-            const response: AxiosResponse = await axios.get(`${API_URL}/route/operator/${user?.$id}`);
+            // kjo osh comment se ska hala routes sicalli OperatorRoles, kur de mbushet me tdhona ater de hicet pi komenti
+            // const response: AxiosResponse = await axios.get(`${API_URL}/route/operator/${user?.$id}`); 
+            const response: AxiosResponse = await axios.get(`${API_URL}/route`); 
             const lineIds = response.data.data.map((route: Route) => route._id).join('-');
             setLines(response.data.data);
             setSelectedLine(lineIds); 

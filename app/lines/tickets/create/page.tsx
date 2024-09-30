@@ -1,6 +1,6 @@
 "use client"
 
-import { getStationByOperator } from "@/actions/stations";
+import { getAllStations, getStationByOperator } from "@/actions/stations";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input";
@@ -66,7 +66,7 @@ export default function TravelApp() {
     useEffect(() => {
         if(user) {
             const op_id = user?.$id;
-            getStationByOperator(op_id!).then((fetchedStations: Station[]) => {
+            getAllStations().then((fetchedStations: Station[]) => {
                 setAllStations(fetchedStations);
                 console.log({stations: fetchedStations})
             })        
@@ -256,7 +256,7 @@ export default function TravelApp() {
                 <CardContent>
                     {isAddingStation ? (
                         <ul className="space-y-4">
-                            {allStations.map((station, index) => (
+                            {allStations?.map((station, index) => (
                                 <li 
                                     key={index} 
                                     onClick={() => selectStation(station)}
