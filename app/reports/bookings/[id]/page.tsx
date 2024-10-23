@@ -149,7 +149,7 @@ const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
                             <span>${(booking?.price).toFixed(2)}</span>
                           </div>
                           <div className="flex justify-between">
-                            <span>Mebus Service Fee:</span>
+                            <span>Busly Service Fee:</span>
                             <span>${(booking?.service_fee)?.toFixed(2) || "0.00"}</span>
                           </div>
                           <div className="flex justify-between">

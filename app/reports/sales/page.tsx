@@ -79,7 +79,7 @@ export default function page() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-    <h1 className="text-3xl font-bold mb-6 text-gray-800">Mebus Monthly Debt Owed to You</h1>
+    <h1 className="text-3xl font-bold mb-6 text-gray-800">Busly Monthly Debt Owed to You</h1>
     <div className="mb-6 flex flex-wrap items-center gap-4">
         <div className="flex flex-wrap gap-2">
           {months.map((monthName: string) => (

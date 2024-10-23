@@ -34,7 +34,7 @@ const agencySchema = z.object({
     contact_email: z.string().email('Invalid contact email').optional(),
   }),
   financial_data: z.object({
-    percentage: z.number().min(0).max(100).optional(),
+    // percentage: z.number().min(0).max(100).optional(),
     total_sales: z.number().min(0).optional(),
     profit: z.number().min(0).optional(),
     debt: z.number().min(0).optional(),
@@ -54,6 +54,7 @@ export default function AgencyForm() {
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const {user} = useUser();
+
 
   const form = useForm({
     resolver: zodResolver(agencySchema),

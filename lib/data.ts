@@ -22,20 +22,10 @@ export const NAV_LINKS = [
         description: "See routes capacity, start time and sales report.",
       },
       {
-        title: "Create Route",
+        title: "Our routes",
         href: "/lines/create",
-        description: "Set up a new bus line and define its route.",
-      },
-      {
-        title: "Create Tickets",
-        href: "/lines/tickets/create",
-        description: "Generate tickets for specific lines and trips.",
-      },
-      {
-        title: "Create stations",
-        href: "/lines/cities/create",
-        description: "Create cities with their stations so you can use them to create tickets.",
-      },
+        description: "Explore our available bus routes for convenient travel planning.",
+      }
     ],
   },
   {
@@ -44,9 +34,9 @@ export const NAV_LINKS = [
     description: "Manage agencies/partners.",
     items: [
       {
-        title: "Create Agency",
+        title: "Agencies",
         href: "/agencies/create",
-        description: "Set up a new bus line and define its route.",
+        description: "View existing agents or create new ones with ease.",
       },
     ],
   },

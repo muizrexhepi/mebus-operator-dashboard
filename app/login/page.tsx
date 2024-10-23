@@ -62,7 +62,7 @@ const LoginForm = ({ isOpen }: { isOpen: boolean }) => {
         await account.deleteSessions();
         return setError("Not authorized");
       }
-
+      console.log({papafingo: newUser})
       if (newUser) {
         window.dispatchEvent(new Event("userChange"));
         setError("");

@@ -9,20 +9,20 @@ import { UserProvider } from "../context/user";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Mebus Dashboard - Manage Your Bus Ticket Bookings",
-  description: "Mebus Dashboard provides a comprehensive solution for managing bus ticket bookings, schedules, and customer data. Streamline your operations and offer a seamless experience for passengers.",
-  keywords: "Mebus, bus booking, bus ticket management, transport, scheduling, customer service, dashboard",
+  title: "Busly Dashboard - Manage Your Bus Ticket Bookings",
+  description: "Busly Dashboard provides a comprehensive solution for managing bus ticket bookings, schedules, and customer data. Streamline your operations and offer a seamless experience for passengers.",
+  keywords: "Busly, bus booking, bus ticket management, transport, scheduling, customer service, dashboard",
   openGraph: {
-    title: "Mebus Portal - Manage Your Business Efficiently",
-    description: "Access Mebus Portal to streamline business operations and improve productivity with cutting-edge tools and resources.",
-    url: "https://portal.mebus.com", 
+    title: "Busly Portal - Manage Your Business Efficiently",
+    description: "Access Busly Portal to streamline business operations and improve productivity with cutting-edge tools and resources.",
+    url: "https://portal.busly.eu", 
     type: "website",
     images: [
       {
         url: "/assets/images/portal-og-image.png",
         width: 1200,
         height: 630,
-        alt: "Mebus Portal Overview",
+        alt: "Busly Portal Overview",
       },
     ],
   },
@@ -46,7 +46,9 @@ export default function RootLayout({
             disableTransitionOnChange
             >
             <div className="flex min-h-screen w-full flex-col">
-              <Header />
+              <div className="z-[100]">
+                <Header />
+              </div>
               {children}
             </div>
             <Toaster />

@@ -29,8 +29,8 @@ const Header = () => {
           href={"/"}
           className="flex items-center gap-2 text-lg font-semibold"
         >
-          MEBUS
-          <span className="sr-only">Mebus</span>
+          BUSLY
+          <span className="sr-only">Busly</span>
         </Link>
         {/* {NAV_LINKS.map((link, index) => (
           <Link
@@ -58,8 +58,8 @@ const Header = () => {
               href={"/"}
               className="flex items-center gap-2 text-2xl font-semibold"
             >
-              MEBUS
-              <span className="sr-only">Mebus</span>
+              BUSLY
+              <span className="sr-only">Busly</span>
             </Link>
             <div className="space-y-2">
               {NAV_LINKS.map((link) =>

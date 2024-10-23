@@ -1,5 +1,5 @@
 {
-  "name": "mebus-operator-dashboard",
+  "name": "busly-operator-dashboard",
   "version": "0.1.0",
   "private": true,
   "scripts": {
