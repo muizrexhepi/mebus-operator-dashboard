@@ -3,123 +3,89 @@
 import { useState, useEffect } from 'react'
 import { useUser } from '@/context/user'
 import { API_URL } from '@/environment'
-import { Route } from '@/models/route'
 import axios from 'axios'
-import Select from 'react-select'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "@/components/ui/use-toast"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Loader2 } from 'lucide-react'
+import { Driver } from '@/models/driver'
 
 interface RouteOption {
   value: string;
   label: string;
 }
 
+
+
 export default function CreateEmployee() {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [routes, setRoutes] = useState<RouteOption[]>([])
-  const [selectedRoutes, setSelectedRoutes] = useState<RouteOption[]>([])
+  const [drivers, setDrivers] = useState<Driver[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const { user } = useUser()
 
   useEffect(() => {
     if (user) {
-      fetchRoutes()
+      fetchDrivers()
     }
   }, [user])
 
-  const fetchRoutes = async () => {
+  const fetchDrivers = async () => {
+    setIsLoading(true)
     try {
-      const response = await axios.get(`${API_URL}/route/operator/${user?.$id}`)
-      const routeOptions: RouteOption[] = response.data.data.map((route: Route) => ({
-        value: route._id,
-        label: route.code
-      }))
-      setRoutes(routeOptions)
+      const response = await axios.get(`${API_URL}/driver/operator/${user?.$id}`)
+      const data: Driver[] = response.data.data
+      setDrivers(data)
     } catch (error) {
-      console.error('Error fetching routes:', error)
+      console.error('Error fetching drivers:', error)
       toast({
         title: "Error",
-        description: "Failed to fetch routes. Please try again.",
+        description: "Failed to fetch drivers. Please try again.",
         variant: "destructive",
       })
-    }
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      const response = await axios.post(`${API_URL}/driver/create/${user?.$id}`, {
-        name,
-        email,
-        password,
-        assigned_routes: selectedRoutes.map(route => route.value),
-      })
-      toast({
-        title: "Success",
-        description: "Employee created successfully!",
-      })
-
-      setName('')
-      setEmail('')
-      setPassword('')
-      setSelectedRoutes([])
-    } catch (error) {
-      console.error('Error creating employee:', error)
-      toast({
-        title: "Error",
-        description: "Failed to create employee. Please try again.",
-        variant: "destructive",
-      })
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto">
-      <div>
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="password">Password</Label>
-        <Input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <Label htmlFor="routes">Assigned Routes</Label>
-        <Select
-          isMulti
-          options={routes}
-          value={selectedRoutes}
-          onChange={(selected: any) => setSelectedRoutes(selected as RouteOption[])}
-          placeholder="Select routes"
-          className="basic-multi-select"
-          classNamePrefix="select"
-        />
-      </div>
-      <Button type="submit" className="w-full">Create Employee</Button>
-    </form>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Drivers</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <Loader2 className="h-8 w-8 animate-spin" />
+          </div>
+        ) : drivers?.length > 0 ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-[200px]">Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Assigned Routes</TableHead>
+                <TableHead>Scanned Bookings</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {drivers?.map((driver) => (
+                <TableRow key={driver._id}>
+                  <TableCell className="font-medium">{driver.name}</TableCell>
+                  <TableCell>{driver.email}</TableCell>
+                  <TableCell>{driver.assigned_routes.join(", ").split(", ").map((route, index) => (
+                    <span key={index}>{route}<br /></span>
+                  ))}</TableCell>
+                  <TableCell>{driver.scanned_bookings.length}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        ) : (
+          <div className="text-center py-4">No drivers found.</div>
+        )}
+      </CardContent>
+    </Card>
   )
 }
