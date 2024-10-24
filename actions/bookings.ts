@@ -13,6 +13,15 @@ export const getBookingsByOperatorId = async (operator_id: string, page?: number
     }
 };
 
+export const getTotalCountByOperatorId = async (operator_id: string) => {
+    try {
+        const res = await axios.get(`${API_URL}/booking/count/operator/${operator_id}`);
+        return res?.data?.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const getBookingsWithId = async (ids: string, page?: number, limit?: number) => {
     try {
         console.log({ids})

@@ -212,7 +212,7 @@ export default function Dashboard() {
               </Table>
             </CardContent>
           </Card>
-          <Card x-chunk="dashboard-01-chunk-5">
+          {/* <Card x-chunk="dashboard-01-chunk-5">
             <CardHeader>
               <CardTitle>Recent Sales</CardTitle>
             </CardHeader>
@@ -293,7 +293,7 @@ export default function Dashboard() {
                 <div className="ml-auto font-medium">+$39.00</div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
       </main>
     </div>
