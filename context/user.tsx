@@ -32,6 +32,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const getUser = async () => {
     try {
       const currentUser = await account.get();
+      if(currentUser.labels[0] !== "operator") {
+        return router.push('/login')
+      }
       setUser(currentUser);  
     } catch (error) {
       if (error instanceof AppwriteException) {

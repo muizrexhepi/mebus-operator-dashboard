@@ -56,7 +56,6 @@ const LoginForm = ({ isOpen }: { isOpen: boolean }) => {
       );
 
       const newUser = await account.get();
-
       if(newUser.labels[0] !== USER_LABELS.OPERATOR) {
         setIsLoading(false)
         await account.deleteSessions();
