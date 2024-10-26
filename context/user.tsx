@@ -40,9 +40,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       if (error instanceof AppwriteException) {
         setError(error.message);
 
-        if (error.code === 401 || error.message.includes("missing scope")) {
-          router.push("/login");
-        }
+        // if (error.code === 401 || error.message.includes("missing scope")) {
+        //   router.push("/login");
+        // }
       } else {
         setError("An unexpected error occurred.");
       }

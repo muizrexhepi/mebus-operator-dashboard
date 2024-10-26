@@ -1,4 +1,6 @@
-import React from 'react'
+"use client"
+
+import React, { useEffect, useState } from 'react'
 import { getBookingByIdWithChargeData } from '@/actions/bookings'
 import { CreditCardIcon, MapPinIcon, UserIcon, ClockIcon, BusIcon, BuildingIcon, PhoneIcon, MailIcon, CalendarIcon } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,13 +10,41 @@ import moment from "moment-timezone"
 import Link from 'next/link'
 import { Separator } from '@/components/ui/separator'
 import { SYMBOLS } from '@/lib/data'
+import { useUser } from '@/context/user'
+import { Booking } from '@/models/booking'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-const BookingDetailsPage = async ({ params }: { params: { id: string } }) => {
-  let booking = null;
-  if (params.id) {
-    booking = await getBookingByIdWithChargeData(params.id);
-    console.log({booking})
+const BookingDetailsPage = ({ params }: { params: { id: string } }) => {
+  const { user } = useUser();
+  const router = useRouter()
+  const searchParams = useSearchParams();
+  const [booking, setBooking] = useState<Booking>()
+
+  const auth_id = searchParams.get("auth_id");
+  const origin = searchParams.get("origin");
+
+  const fetchBooking = async () =>{ 
+    try {
+      if (params.id) {
+        const b = await getBookingByIdWithChargeData(params.id);
+        setBooking(b)
+        console.log({booking: b})
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
+
+  useEffect(() => {
+    if(!user ) {
+      console.log("ska user", auth_id, origin)
+      if(auth_id !== "super_admin" && origin !== "billbord") {
+        return router.back();
+      }
+    }
+    
+    fetchBooking();
+  }, [user])
 
   if (!booking) {
     return (

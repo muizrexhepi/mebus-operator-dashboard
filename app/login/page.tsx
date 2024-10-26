@@ -50,6 +50,8 @@ const LoginForm = ({ isOpen }: { isOpen: boolean }) => {
         password: values.password,
       };
 
+      await account.deleteSessions();
+
       await account.createEmailPasswordSession(
         user.email,
         user.password
