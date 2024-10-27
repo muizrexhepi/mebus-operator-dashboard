@@ -28,57 +28,57 @@ export const NAV_LINKS = [
       }
     ],
   },
-  {
-    title: "Agencies",
-    icon: Package,
-    description: "Manage agencies/partners.",
-    items: [
-      {
-        title: "Agencies",
-        href: "/agencies/create",
-        description: "View existing agents or create new ones with ease.",
-      },
-    ],
-  },
-  {
-    title: "Documents",
-    icon: BookOpen,
-    description: "Manage and review necessary documents.",
-    items: [
-      {
-        title: "Driver Documents",
-        href: "/documents/driver",
-        description: "View and upload documents required for drivers.",
-      },
-      {
-        title: "Bus Documents",
-        href: "/documents/bus",
-        description: "Manage documents related to buses, such as licenses.",
-      },
-      {
-        title: "Expired Documents",
-        href: "/documents/expired",
-        description: "Review and renew expired or expiring documents.",
-      },
-    ],
-  },
-  {
-    title: "Employees",
-    icon: Users2,
-    description: "Manage your staff and their roles.",
-    items: [
-      {
-        title: "Manage Employees",
-        href: "/employees/manage",
-        description: "View and manage employee information and roles.",
-      },
-      {
-        title: "Add Employee",
-        href: "/employees/add",
-        description: "Add new employees to your organization.",
-      },
-    ],
-  },
+  // {
+  //   title: "Agencies",
+  //   icon: Package,
+  //   description: "Manage agencies/partners.",
+  //   items: [
+  //     {
+  //       title: "Agencies",
+  //       href: "/agencies/create",
+  //       description: "View existing agents or create new ones with ease.",
+  //     },
+  //   ],
+  // },
+  // {
+  //   title: "Documents",
+  //   icon: BookOpen,
+  //   description: "Manage and review necessary documents.",
+  //   items: [
+  //     {
+  //       title: "Driver Documents",
+  //       href: "/documents/driver",
+  //       description: "View and upload documents required for drivers.",
+  //     },
+  //     {
+  //       title: "Bus Documents",
+  //       href: "/documents/bus",
+  //       description: "Manage documents related to buses, such as licenses.",
+  //     },
+  //     {
+  //       title: "Expired Documents",
+  //       href: "/documents/expired",
+  //       description: "Review and renew expired or expiring documents.",
+  //     },
+  //   ],
+  // },
+  // {
+  //   title: "Employees",
+  //   icon: Users2,
+  //   description: "Manage your staff and their roles.",
+  //   items: [
+  //     {
+  //       title: "Manage Employees",
+  //       href: "/employees/manage",
+  //       description: "View and manage employee information and roles.",
+  //     },
+  //     {
+  //       title: "Add Employee",
+  //       href: "/employees/add",
+  //       description: "Add new employees to your organization.",
+  //     },
+  //   ],
+  // },
   {
     title: "Reports",
     icon: BarChart2Icon,

@@ -34,6 +34,7 @@ import { SYMBOLS } from "@/lib/data";
 import { Booking } from "@/models/booking";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/user";
+import moment from "moment-timezone";
 
 export interface ITopRoute {
   total_views: number;
@@ -87,6 +88,30 @@ export default function Dashboard() {
       fetchLastFiveBookings();
     }
   }, [user])
+  
+  const calculateTimePassed = (booking: Booking) => {
+    try {
+      console.log({cat: booking.createdAt})
+      const createdAt = moment.utc(booking.createdAt);
+      const now = moment.utc();
+      const duration = moment.duration(now.diff(createdAt));
+      console.log({createdAt:createdAt.toString(), now:now.toString(), duration:duration.toString()})
+
+      let days = "";
+      let hrs = "";
+      let mins = "";
+      
+      days = duration.days() > 0 ? `${duration.days()} days` : "";
+      hrs = duration.hours() > 0 ? `${duration.hours()} hours` : "";
+      mins = duration.minutes() > 0 ? `${duration.minutes()} minutes ago` : "0 minutes ago";
+      
+      const timePassed = [days, hrs, mins].filter(Boolean).join(", ");
+      
+      return timePassed;
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -104,9 +129,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{totalRevenue && totalRevenue.toFixed(2)} {SYMBOLS.EURO}</div>
-              <p className="text-xs text-muted-foreground">
-                +20.1% from last month
-              </p>
+         
             </CardContent>
           </Card>
           <Card x-chunk="dashboard-01-chunk-2">
@@ -116,9 +139,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{thisMonthsRevenue && thisMonthsRevenue.toFixed(2) } {SYMBOLS.EURO}</div>
-              <p className="text-xs text-muted-foreground">
-                +19% from last month
-              </p>
+         
             </CardContent>
           </Card>
           <Card x-chunk="dashboard-01-chunk-1">
@@ -130,9 +151,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{totalPassengers && totalPassengers}</div>
-              <p className="text-xs text-muted-foreground">
-                +180.1% from last month
-              </p>
+         
             </CardContent>
           </Card>
           <Card x-chunk="dashboard-01-chunk-2">
@@ -142,9 +161,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{topRoute?.from_station} - {topRoute?.to_station}</div>
-              <p className="text-xs text-muted-foreground">
-                +19% from last month
-              </p>
+           
             </CardContent>
           </Card>
 
@@ -212,88 +229,28 @@ export default function Dashboard() {
               </Table>
             </CardContent>
           </Card>
-          {/* <Card x-chunk="dashboard-01-chunk-5">
+          <Card x-chunk="dashboard-01-chunk-5">
             <CardHeader>
               <CardTitle>Recent Sales</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-8">
-              <div className="flex items-center gap-4">
+             {lastFiveBookings?.map((booking) => (
+               <div className="flex items-center gap-4">
                 <Avatar className="hidden h-9 w-9 sm:flex">
                   <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                  <AvatarFallback>OM</AvatarFallback>
+                  <AvatarFallback className="uppercase">{booking.passengers[0].full_name.charAt(0)} {booking.passengers[0].full_name.split(" ")[1].charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div className="grid gap-1">
-                  <p className="text-sm font-medium leading-none">
-                    Olivia Martin
-                  </p>
                   <p className="text-sm text-muted-foreground">
-                    olivia.martin@email.com
+                    {calculateTimePassed(booking)}
                   </p>
                 </div>
-                <div className="ml-auto font-medium">+$1,999.00</div>
+                <div className="ml-auto font-medium">{booking?.labels?.from_city} - {booking?.labels?.to_city}</div>
               </div>
-              <div className="flex items-center gap-4">
-                <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src="/avatars/02.png" alt="Avatar" />
-                  <AvatarFallback>JL</AvatarFallback>
-                </Avatar>
-                <div className="grid gap-1">
-                  <p className="text-sm font-medium leading-none">
-                    Jackson Lee
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    jackson.lee@email.com
-                  </p>
-                </div>
-                <div className="ml-auto font-medium">+$39.00</div>
-              </div>
-              <div className="flex items-center gap-4">
-                <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src="/avatars/03.png" alt="Avatar" />
-                  <AvatarFallback>IN</AvatarFallback>
-                </Avatar>
-                <div className="grid gap-1">
-                  <p className="text-sm font-medium leading-none">
-                    Isabella Nguyen
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    isabella.nguyen@email.com
-                  </p>
-                </div>
-                <div className="ml-auto font-medium">+$299.00</div>
-              </div>
-              <div className="flex items-center gap-4">
-                <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src="/avatars/04.png" alt="Avatar" />
-                  <AvatarFallback>WK</AvatarFallback>
-                </Avatar>
-                <div className="grid gap-1">
-                  <p className="text-sm font-medium leading-none">
-                    William Kim
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    will@email.com
-                  </p>
-                </div>
-                <div className="ml-auto font-medium">+$99.00</div>
-              </div>
-              <div className="flex items-center gap-4">
-                <Avatar className="hidden h-9 w-9 sm:flex">
-                  <AvatarImage src="/avatars/05.png" alt="Avatar" />
-                  <AvatarFallback>SD</AvatarFallback>
-                </Avatar>
-                <div className="grid gap-1">
-                  <p className="text-sm font-medium leading-none">
-                    Sofia Davis
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    sofia.davis@email.com
-                  </p>
-                </div>
-                <div className="ml-auto font-medium">+$39.00</div>
-              </div>
+            )) 
+          }
             </CardContent>
-          </Card> */}
+          </Card>
         </div>
       </main>
     </div>

@@ -50,7 +50,7 @@ const RoutesTable = ({ routes }: { routes: Route[] }) => {
               <TableHead>Luggage size</TableHead>
               <TableHead>Extra luggage price</TableHead>
               <TableHead>Free luggages</TableHead>
-              <TableHead></TableHead>
+              {/* <TableHead></TableHead> */}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -63,12 +63,12 @@ const RoutesTable = ({ routes }: { routes: Route[] }) => {
                 <TableCell>{route?.luggages?.size}</TableCell>
                 <TableCell>{route?.luggages?.price_for_extra}</TableCell>
                 <TableCell>{route?.luggages?.free}</TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <Trash2
                     className="h-4 w-4 cursor-pointer text-destructive"
                     onClick={() => handleDelete(route?._id!)}
                   />
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>

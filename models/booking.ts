@@ -42,6 +42,7 @@ export interface Booking {
     is_paid: boolean;
     metadata: BookingMetadata;
     charge?: Charge;
+    createdAt: string;
 }
 
 export interface BookingMetadata {
