@@ -173,7 +173,7 @@ export default function Dashboard() {
               <div className="grid gap-2">
                 <CardTitle>Transactions</CardTitle>
                 <CardDescription>
-                  Recent transactions from your store.
+                  Recent transactions from Busly.
                 </CardDescription>
               </div>
               <Button asChild size="sm" className="ml-auto gap-1">

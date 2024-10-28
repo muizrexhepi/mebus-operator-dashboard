@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 
 interface BookingsTableProps {
   bookings: Booking[]
-  isLoading: boolean
+  isLoading?: boolean
 }
 
 export default function BookingsTable({ bookings, isLoading }: BookingsTableProps) {
