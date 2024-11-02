@@ -23,12 +23,12 @@ const BookingDetailsPage = ({ params }: { params: { id: string } }) => {
   const auth_id = searchParams.get("auth_id");
   const origin = searchParams.get("origin");
 
-  const fetchBooking = async () =>{ 
+  const fetchBooking = async () => {
     try {
       if (params.id) {
         const b = await getBookingByIdWithChargeData(params.id);
         setBooking(b)
-        console.log({booking: b})
+        console.log({ booking: b })
       }
     } catch (error) {
       console.log(error)
@@ -36,13 +36,13 @@ const BookingDetailsPage = ({ params }: { params: { id: string } }) => {
   }
 
   useEffect(() => {
-    if(!user ) {
+    if (!user) {
       console.log("ska user", auth_id, origin)
-      if(auth_id !== "super_admin" && origin !== "billbord") {
+      if (auth_id !== "super_admin" && origin !== "billbord") {
         return router.back();
       }
     }
-    
+
     fetchBooking();
   }, [user])
 
@@ -52,7 +52,7 @@ const BookingDetailsPage = ({ params }: { params: { id: string } }) => {
         <Card className="w-full max-w-md">
           <CardContent className="flex flex-col items-center p-6">
             <h2 className="mt-4 text-2xl font-bold">Booking Not Found</h2>
-            <p className="mt-2 text-center ">We couldn't find the booking you're looking for. Please check the booking ID and try again.</p>
+            <p className="mt-2 text-center ">We couldn&apos;t find the booking you&apos;re looking for. Please check the booking ID and try again.</p>
           </CardContent>
         </Card>
       </div>
@@ -99,8 +99,8 @@ const BookingDetailsPage = ({ params }: { params: { id: string } }) => {
                         <span className="text-sm">{booking?.destinations?.arrival_station_label}</span>
                       </div>
                     </div>
-                    
-                    <Separator/>
+
+                    <Separator />
 
                     <div className="flex items-center space-x-2">
                       <CalendarIcon className="text-primary" />
@@ -110,7 +110,7 @@ const BookingDetailsPage = ({ params }: { params: { id: string } }) => {
                       <ClockIcon className="text-primary" />
                       <span>{moment.utc(booking?.departure_date).format("HH:mm")}</span>
                     </div>
-               
+
                     <div className="flex items-center space-x-2">
                       <Badge variant="outline">Origin : {booking?.platform}</Badge>
                     </div>
@@ -125,34 +125,34 @@ const BookingDetailsPage = ({ params }: { params: { id: string } }) => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                  {booking?.passengers?.map((passenger: Passenger, index: number) => (
-                    <Card key={index}>
-                      <CardHeader>
-                        <CardTitle className="flex items-center">
-                          <UserIcon className="mr-2" />
-                          Passenger {index + 1}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-2">
-                        <div className="flex justify-between items-center">
-                          <span className="font-semibold">Full Name:</span>
-                          <span>{passenger?.full_name}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="font-semibold">Email:</span>
-                          <span>{passenger?.email}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="font-semibold">Phone:</span>
-                          <span>{passenger?.phone}</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span className="font-semibold">Price:</span>
-                          <Badge variant="secondary">${passenger?.price?.toFixed(2)}</Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                    {booking?.passengers?.map((passenger: Passenger, index: number) => (
+                      <Card key={index}>
+                        <CardHeader>
+                          <CardTitle className="flex items-center">
+                            <UserIcon className="mr-2" />
+                            Passenger {index + 1}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold">Full Name:</span>
+                            <span>{passenger?.full_name}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold">Email:</span>
+                            <span>{passenger?.email}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold">Phone:</span>
+                            <span>{passenger?.phone}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold">Price:</span>
+                            <Badge variant="secondary">${passenger?.price?.toFixed(2)}</Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </CardContent>
                 </Card>
               </div>
@@ -202,7 +202,7 @@ const BookingDetailsPage = ({ params }: { params: { id: string } }) => {
                         </div>
                       </>
                     )}
- </CardContent>
+                  </CardContent>
                 </Card>
 
                 <Card>
@@ -239,7 +239,7 @@ const BookingDetailsPage = ({ params }: { params: { id: string } }) => {
                     </div>
                     <div className="flex justify-between items-center">
                       <Link href={booking.charge?.receipt_url!} target='_blank' className="text-sm  underline">Click here to view receipt</Link>
-                    </div> 
+                    </div>
                   </CardContent>
                 </Card>
               </div>

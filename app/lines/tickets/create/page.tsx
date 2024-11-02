@@ -220,35 +220,6 @@ export default function TravelApp() {
 
     return (
         <div className="flex justify-center items-start space-x-8 p-8 bg-gray-100 min-h-screen">
-            <RouteDropdown />
-            <Dialog>
-                <DialogTrigger asChild>
-                    <Button 
-                        className="fixed top-4 right-4 z-10" 
-                        variant="outline"
-                    >
-                        <Info className="h-4 w-4 mr-2" />
-                        How to use
-                    </Button>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>How to Create Lines</DialogTitle>
-                        <DialogDescription>
-                            Follow these steps to create lines in the Travel App:
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                        <p>1. Add stations using the "Shto stacion të ri" button in the left panel.</p>
-                        <p>2. Click on a station in the left panel to select it.</p>
-                        <p>3. The right panel will show possible lines from the selected station.</p>
-                        <p>4. For each line, enter the price, children's price, start time, and duration.</p>
-                        <p>5. Use the red X button to remove unwanted lines.</p>
-                        <p>6. Click the "Submit" button to save your changes.</p>
-                    </div>
-                </DialogContent>
-            </Dialog>
-
             <Card className="w-80">
                 <CardHeader>
                     <CardTitle>cikidenski</CardTitle>

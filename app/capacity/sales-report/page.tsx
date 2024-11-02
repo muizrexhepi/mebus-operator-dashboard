@@ -3,10 +3,11 @@
 import { getBookingsWithId } from '@/actions/bookings';
 import BookingsTable from '@/components/tables/booking'
 import { Booking } from '@/models/booking';
+import { Loader } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 
-const page = () => {
+const SalesReportPage = () => {
     const searchParams = useSearchParams();
     const ids = searchParams.get("booking_ids")
     const [bookings, setBookings ] = useState<Booking[]>([])
@@ -32,4 +33,12 @@ const page = () => {
     )
 }
 
-export default page
+const SalesReport = () => {
+    return (
+        <Suspense fallback={<Loader className='animate-spin h-10 w-10' />}>
+            <SalesReportPage />
+        </Suspense>
+    )
+}
+
+export default SalesReport;

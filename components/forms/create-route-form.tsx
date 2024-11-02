@@ -174,7 +174,7 @@ export default function RouteForm({ stations }: { stations: Station[] }) {
                     <SelectContent>
                       {
                           stations?.map((station: Station) => { return (
-                              <SelectItem value={station?._id!}>{station.name}</SelectItem>
+                              <SelectItem key={station?._id} value={station?._id!}>{station.name}</SelectItem>
                             )
                           })
                       }
@@ -200,7 +200,7 @@ export default function RouteForm({ stations }: { stations: Station[] }) {
                     <SelectContent>
                       {
                           stations?.map((station: Station) => { return (
-                              <SelectItem value={station?._id!}>{station.name}</SelectItem>
+                              <SelectItem key={station?._id} value={station?._id!}>{station.name}</SelectItem>
                             )
                           })
                       }
