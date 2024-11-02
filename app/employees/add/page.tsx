@@ -1,4 +1,4 @@
-// 'use client'
+'use client'
 
 // import { useState, useEffect } from 'react'
 // import { useUser } from '@/context/user'
@@ -20,7 +20,7 @@
 
 
 
-// export default function CreateEmployee() {
+export default function CreateEmployee() {
 //   const [drivers, setDrivers] = useState<Driver[]>([])
 //   const [isLoading, setIsLoading] = useState(true)
 //   const { user } = useUser()
@@ -49,43 +49,44 @@
 //     }
 //   }
 
-//   return (
-//     <Card className="w-full">
-//       <CardHeader>
-//         <CardTitle>Drivers</CardTitle>
-//       </CardHeader>
-//       <CardContent>
-//         {isLoading ? (
-//           <div className="flex justify-center items-center h-64">
-//             <Loader2 className="h-8 w-8 animate-spin" />
-//           </div>
-//         ) : drivers?.length > 0 ? (
-//           <Table>
-//             <TableHeader>
-//               <TableRow>
-//                 <TableHead className="w-[200px]">Name</TableHead>
-//                 <TableHead>Email</TableHead>
-//                 <TableHead>Assigned Routes</TableHead>
-//                 <TableHead>Scanned Bookings</TableHead>
-//               </TableRow>
-//             </TableHeader>
-//             <TableBody>
-//               {drivers?.map((driver) => (
-//                 <TableRow key={driver._id}>
-//                   <TableCell className="font-medium">{driver.name}</TableCell>
-//                   <TableCell>{driver.email}</TableCell>
-//                   <TableCell>{driver.assigned_routes.join(", ").split(", ").map((route, index) => (
-//                     <span key={index}>{route}<br /></span>
-//                   ))}</TableCell>
-//                   <TableCell>{driver.scanned_bookings.length}</TableCell>
-//                 </TableRow>
-//               ))}
-//             </TableBody>
-//           </Table>
-//         ) : (
-//           <div className="text-center py-4">No drivers found.</div>
-//         )}
-//       </CardContent>
-//     </Card>
-//   )
-// }
+  return (
+    <div>3</div>
+    // <Card className="w-full">
+    //   <CardHeader>
+    //     <CardTitle>Drivers</CardTitle>
+    //   </CardHeader>
+    //   <CardContent>
+    //     {isLoading ? (
+    //       <div className="flex justify-center items-center h-64">
+    //         <Loader2 className="h-8 w-8 animate-spin" />
+    //       </div>
+    //     ) : drivers?.length > 0 ? (
+    //       <Table>
+    //         <TableHeader>
+    //           <TableRow>
+    //             <TableHead className="w-[200px]">Name</TableHead>
+    //             <TableHead>Email</TableHead>
+    //             <TableHead>Assigned Routes</TableHead>
+    //             <TableHead>Scanned Bookings</TableHead>
+    //           </TableRow>
+    //         </TableHeader>
+    //         <TableBody>
+    //           {drivers?.map((driver) => (
+    //             <TableRow key={driver._id}>
+    //               <TableCell className="font-medium">{driver.name}</TableCell>
+    //               <TableCell>{driver.email}</TableCell>
+    //               <TableCell>{driver.assigned_routes.join(", ").split(", ").map((route, index) => (
+    //                 <span key={index}>{route}<br /></span>
+    //               ))}</TableCell>
+    //               <TableCell>{driver.scanned_bookings.length}</TableCell>
+    //             </TableRow>
+    //           ))}
+    //         </TableBody>
+    //       </Table>
+    //     ) : (
+    //       <div className="text-center py-4">No drivers found.</div>
+    //     )}
+    //   </CardContent>
+    // </Card>
+  )
+}
