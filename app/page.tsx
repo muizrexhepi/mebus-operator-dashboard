@@ -235,7 +235,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="grid gap-8">
              {lastFiveBookings?.map((booking) => (
-               <div className="flex items-center gap-4">
+               <div key={booking?._id} className="flex items-center gap-4">
                 <Avatar className="hidden h-9 w-9 sm:flex">
                   <AvatarImage src="/avatars/01.png" alt="Avatar" />
                   <AvatarFallback className="uppercase">{booking.passengers[0].full_name.charAt(0)} {booking.passengers[0].full_name.split(" ")[1].charAt(0)}</AvatarFallback>

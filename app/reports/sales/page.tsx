@@ -18,7 +18,7 @@ export interface IDebt {
 
 type SortDirection = 'asc' | 'desc'
 
-export default function page() {
+const Page = () => {
   const [debts, setDebts] = useState<IDebt[]>([])
   const [month, setMonth] = useState<string>('')
   const [year, setYear] = useState<string>('2024')
@@ -155,3 +155,6 @@ export default function page() {
     </div>
   )
 }
+
+
+export default Page;
