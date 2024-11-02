@@ -226,6 +226,8 @@ const BookingDetailsPage = ({ params }: { params: { id: string } }) => {
 
                 <Card>
                   <CardHeader>
+
+                    
                     <CardTitle>Booking Metadata</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
