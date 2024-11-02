@@ -27,7 +27,7 @@ import { FormError } from "@/components/form-error";
 import { account } from "@/appwrite.config";
 import { USER_LABELS } from "@/lib/data";
 
-const LoginForm = ({ isOpen }: { isOpen: boolean }) => {
+const LoginForm = () => {
   const [error, setError] = useState<string | undefined>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
