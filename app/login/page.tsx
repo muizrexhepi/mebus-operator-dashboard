@@ -72,7 +72,7 @@ const LoginForm = () => {
       }
     } catch (error: any) {
       setError(error.message || "Something went wrong!");
-      console.log(error);
+      console.log(error.response);
       setIsLoading(false);
     }
   };

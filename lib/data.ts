@@ -101,6 +101,18 @@ export const NAV_LINKS = [
       },
     ],
   },
+  {
+    title: "Live sessions",
+    icon: BarChart2Icon,
+    description: "View live sessions by your employees.",
+    items: [
+      {
+        title: "Live sessions",
+        href: "/live-sessions",
+        description: "View live sessions by your employees.",
+      },
+    ],
+  },
 
 ];
 
