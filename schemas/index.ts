@@ -45,31 +45,32 @@ export const loginSchema = z.object({
   });
   
 
-export const routeSchema = z.object({
-  code: z.string(),
-  contact: z.object({
-    phone: z.string(),
-    email: z.string().email(),
-  }),
-  destination: z.object({
-    from: z.string(),
-    to: z.string(),
-  }),
-  stations: z.object({
-    from: z.string(),
-    to: z.string(),
-  }),
-  luggages: z.object({
-    free: z.string(),
-    price_for_extra: z.string(),
-    size: z.string(),
-  }),
-  is_active: z.string(),
-  generate_tickets_automatically: z.string(),
-  metadata: z.object({
-    sold: z.number(),
-  }),
-  operator: z.string(),
-});
+  export const routeSchema = z.object({
+    code: z.string(),
+    contact: z.object({
+      phone: z.string(),
+      email: z.string().email(),
+    }),
+    destination: z.object({
+      from: z.string(),
+      to: z.string(),
+    }),
+    stations: z.object({
+      from: z.string(),
+      to: z.string(),
+    }),
+    luggages: z.object({
+      free: z.number(), 
+      price_for_extra: z.number(),
+      size: z.string(),
+    }),
+    is_active: z.string(),
+    generate_tickets_automatically: z.string(),
+    metadata: z.object({
+      sold: z.number(),
+    }),
+    operator: z.string(),
+  });
+  
 
 export type Route = z.infer<typeof routeSchema>;
