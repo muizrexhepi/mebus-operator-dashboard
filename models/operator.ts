@@ -1,4 +1,5 @@
 export interface Operator {
+    _id: string;
     name: string;
     email: string;
     otp: Otp;
